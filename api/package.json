@@ -1,0 +1,17 @@
+{
+  "name": "toolpunk-api",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "appwrite": "^17.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "node-appwrite": "^15.0.1",
+    "razorpay": "^2.9.6"
+  }
+}
