@@ -1,58 +1,81 @@
-import React, { createContext, useState, useEffect } from 'react';
-import appwriteService from '../services/appwrite';
+import React, { createContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import appwriteService from "../services/appwrite";
 
-export const AuthContext = createContext();
+export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(undefined);
+  const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
-  const checkUser = async () => {
-    setIsLoading(true);
-    try {
-      const currentUser = await appwriteService.getCurrentUser();
-      console.log('AuthContext checkUser:', currentUser);
-      setUser(currentUser || null);
-    } catch (error) {
-      console.error('Check user error:', error);
-      setUser(null);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+  // Initialize auth state
   useEffect(() => {
-    checkUser();
+    const initAuth = async () => {
+      try {
+        const currentUser = await appwriteService.getCurrentUser();
+        setUser(currentUser);
+      } catch (error) {
+        console.error("Auth init error:", error);
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    initAuth();
   }, []);
 
+  // Email/password login
   const login = async (email, password) => {
-    await appwriteService.login(email, password);
-    await checkUser();
-  };
-
-  const loginWithGoogle = async () => {
-    await appwriteService.loginWithGoogle();
-    await checkUser();
-  };
-
-  const logout = async () => {
-    setUser(null); // Clear immediately
-    setIsLoading(true); // Show loading state
+    setIsLoading(true);
     try {
-      await appwriteService.logout();
-      await checkUser(); // Verify session is gone
-      console.log('AuthContext logout successful');
+      await appwriteService.login(email, password);
+      const currentUser = await appwriteService.getCurrentUser();
+      setUser(currentUser);
+      navigate("/projectgenerator", { replace: true });
     } catch (error) {
-      console.error('Logout error:', error);
-      await checkUser(); // Double-check
+      console.error("Login error:", error);
+      setUser(null);
+      throw error;
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Google OAuth login (redirect)
+  const loginWithGoogle = () => {
+    appwriteService.loginWithGoogle();
+  };
+
+  // Logout
+  const logout = async () => {
+    setIsLoading(true);
+    try {
+      await appwriteService.logout();
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      setUser(null);
+      setIsLoading(false);
+      navigate("/login", { replace: true });
+    }
+  };
+
+  // Signup
   const signup = async (email, password, name) => {
-    await appwriteService.register(email, password, name);
-    await checkUser();
+    setIsLoading(true);
+    try {
+      await appwriteService.register(email, password, name);
+      const currentUser = await appwriteService.getCurrentUser();
+      setUser(currentUser);
+      navigate("/projectgenerator", { replace: true });
+    } catch (error) {
+      console.error("Signup error:", error);
+      setUser(null);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

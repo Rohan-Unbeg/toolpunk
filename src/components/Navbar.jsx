@@ -1,17 +1,10 @@
-import React, { useContext, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
 const Navbar = () => {
   const { user, isLoading, logout } = useContext(AuthContext);
-  const nav = useNavigate();
-
   const isPremium = user?.labels?.includes('premium') || false;
-  const userName = user ? user.name || user.email : '';
-
-  useEffect(() => {
-    console.log('Navbar user:', user, 'isLoading:', isLoading);
-  }, [user, isLoading]);
 
   return (
     <nav className="bg-indigo-800 text-white py-4 px-4 sm:px-6 lg:px-8">
@@ -32,23 +25,17 @@ const Navbar = () => {
           >
             Premium
           </Link>
+
           {isLoading ? (
             <span className="text-sm">...</span>
-          ) : userName ? (
+          ) : user ? (
             <>
               <span className="text-sm">
-                Hey, {userName}
+                Hey, {user.name || user.email}
                 {isPremium ? ' 🌟' : ''}
               </span>
               <button
-                onClick={async () => {
-                  try {
-                    await logout();
-                    nav('/login', { replace: true });
-                  } catch (error) {
-                    console.error('Navbar logout error:', error);
-                  }
-                }}
+                onClick={logout}
                 className="text-sm hover:underline"
               >
                 Logout

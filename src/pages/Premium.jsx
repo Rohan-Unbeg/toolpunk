@@ -17,6 +17,32 @@ const Premium = () => {
     alert('Payment integration coming soon! Contact us to upgrade.');
   };
 
+  const startPayment = async () => {
+    const res = await axios.post("https://your-server/create-order"); // or direct call
+    const { orderId } = res.data;
+  
+    const options = {
+      key: "rzp_test_gyTmXJ91YxGDNq", // replace with env
+      amount: 10000, // in paise = ₹100
+      currency: "INR",
+      name: "Toolpunk Premium",
+      order_id: orderId,
+      handler: async (response) => {
+        // ✅ Hit Appwrite function to add 'premium' label
+        await axios.post("/api/verify-payment", { response });
+      },
+      prefill: {
+        email: user.email,
+        name: user.name,
+      },
+      theme: { color: "#6366F1" },
+    };
+  
+    const razor = new window.Razorpay(options);
+    razor.open();
+  };
+  
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-gray-100 flex items-center justify-center">
@@ -117,7 +143,7 @@ const Premium = () => {
           </ul>
           <div className="text-center">
             <button
-              onClick={handleBuyNow}
+              onClick={startPayment}
               disabled={isPremium}
               className={`px-6 py-3 rounded-lg font-medium transition ${
                 isPremium
@@ -125,7 +151,7 @@ const Premium = () => {
                   : 'bg-indigo-600 text-white hover:bg-indigo-700'
               }`}
             >
-              {isPremium ? 'Already Premium' : 'Buy Now'}
+              {isPremium ? 'Already Premium' : 'Buy Premium - ₹100/month'}
             </button>
           </div>
         </div>
