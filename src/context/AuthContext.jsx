@@ -8,6 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const checkUser = async () => {
+    setIsLoading(true);
     try {
       const currentUser = await appwriteService.getCurrentUser();
       console.log('AuthContext checkUser:', currentUser);
@@ -35,8 +36,18 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    await appwriteService.logout();
-    setUser(null);
+    setUser(null); // Clear immediately
+    setIsLoading(true); // Show loading state
+    try {
+      await appwriteService.logout();
+      await checkUser(); // Verify session is gone
+      console.log('AuthContext logout successful');
+    } catch (error) {
+      console.error('Logout error:', error);
+      await checkUser(); // Double-check
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const signup = async (email, password, name) => {
