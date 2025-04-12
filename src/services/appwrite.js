@@ -26,6 +26,13 @@ const appwriteService = {
         }
     },
 
+    async loginWithGoogle() {
+        await account.createOAuth2Session(
+          'google',
+          `${window.location.origin}/projectgenerator`, // Success redirect
+          `${window.location.origin}/login` // Failure redirect
+        );
+      },
     //get logged in user
     async getCurrentUser() {
         try {
@@ -34,7 +41,7 @@ const appwriteService = {
             return null;
         }
     },
-    
+
     async logout() {
         await account.deleteSession("current");
     },
