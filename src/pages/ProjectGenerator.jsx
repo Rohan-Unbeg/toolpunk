@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import { generateIdea } from '../services/api';
 import { FaSpinner, FaCopy, FaFilePdf } from 'react-icons/fa';
 import appwriteService from '../services/appwrite';
 import { saveAs } from 'file-saver';
@@ -73,49 +73,27 @@ const ProjectGenerator = () => {
 
   // Generate idea
   const handleGenerate = async () => {
+    console.log('Generating, isPremium:', isPremium, 'dailyCount:', dailyCount);
     if (!isPremium && dailyCount >= 3) {
       setError('Free limit reached! Get premium for ₹100/month.');
       return;
     }
-
+  
     setLoading(true);
     setError('');
     try {
-      const res = await axios.post(
-        'https://api.groq.com/openai/v1/chat/completions',
-        {
-          model: 'llama3-70b-8192',
-          messages: [
-            {
-              role: 'user',
-              content: `Suggest a ${difficulty} level final year project idea for a ${branch} student. Keep it under 5 lines, no markdown or formatting.`,
-            },
-          ],
-          temperature: 0.7,
-          max_tokens: 300,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_GROK_API_KEY}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-
-      let text = res.data.choices[0].message.content.trim();
-      text = text.replace(/\*\*/g, '').replace(/#+/g, '').replace(/[`_]/g, '');
-      if (text.length > 950) text = text.substring(0, 947) + '...';
-
+      const text = await generateIdea(branch, difficulty);
       setIdea(text);
-
+  
       if (!isPremium) {
         const today = new Date().toISOString().split('T')[0];
+        console.log('Updating limit:', { userId, today, count: dailyCount + 1 });
         await appwriteService.updateLimit(userId, today, dailyCount + 1);
         setDailyCount(dailyCount + 1);
       }
     } catch (err) {
       setError('Failed to generate idea. Try again.');
-      console.error('Generate error:', err?.response?.data || err);
+      console.error('Generate error:', err);
     } finally {
       setLoading(false);
     }

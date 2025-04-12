@@ -6,10 +6,12 @@ import PrivateRoute from "./components/PrivateRoute";
 import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
 import Premium from "./pages/Premium";
+import Navbar from "./components/Navbar";
 
 function App() {
     return (
         <>
+                <Navbar />
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
