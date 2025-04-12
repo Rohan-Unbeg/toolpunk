@@ -34,6 +34,7 @@ const appwriteService = {
             return null;
         }
     },
+    
     async logout() {
         await account.deleteSession("current");
     },

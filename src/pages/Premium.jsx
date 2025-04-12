@@ -4,32 +4,47 @@ import appwriteService from "./../services/appwrite";
 
 const Premium = () => {
     const [userName, setUserName] = useState("");
+    const [isPremium, setIsPremium] = useState(false);
     const [error, setError] = useState("");
     const nav = useNavigate();
 
     useEffect(() => {
         const fetchUser = async () => {
-            try {
-                const user = await appwriteService.getCurrentUser();
-                if (user) {
-                    setUserName(user.name || user.email);
-                } else {
-                    setError("Please log in to view premium plans.");
-                    nav("/login");
-                }
-            } catch (err) {
-                setError("Failed to load user.");
-                console.error("Fetch user error:", err);
+          try {
+            const user = await appwriteService.getCurrentUser();
+            console.log('User:', user); // Debug
+            if (user) {
+              setUserName(user.name || user.email);
+              const premium = user.labels?.includes('premium') || false;
+              console.log('Premium status:', premium); // Debug
+              setIsPremium(premium);
+              if (premium) {
+                setError('You’re already premium! Enjoy unlimited ideas.');
+              }
+            } else {
+              setError('Please log in to view premium plans.');
+              nav('/login');
             }
+          } catch (err) {
+            setError('Failed to load user.');
+            console.error('Fetch user error:', err);
+          }
         };
         fetchUser();
-    }, []);
+      }, []);
+
+
+      
 
     // Placeholder buy action
-  const handleBuyNow = () => {
-    setError('Payment integration coming soon! Contact us to upgrade.');
-    // TODO: Add Razorpay or Stripe later
-  };
+    const handleBuyNow = () => {
+        if (isPremium) {
+          setError('You’re already premium! No need to buy again.');
+          return;
+        }
+        setError('Payment integration coming soon! Contact us to upgrade.');
+        // TODO: Add Razorpay or Stripe later
+      };
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8">
@@ -50,6 +65,7 @@ const Premium = () => {
                                 <span className="font-semibold">
                                     {userName}
                                 </span>
+                                {isPremium ? ' 🌟 (Premium)' : ''}
                             </span>
                             <button
                                 onClick={async () => {
