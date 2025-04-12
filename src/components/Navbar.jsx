@@ -1,26 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import appwriteService from '../services/appwrite';
+import { AuthContext } from '../context/AuthContext';
 
 const Navbar = () => {
-  const [userName, setUserName] = useState('');
-  const [isPremium, setIsPremium] = useState(false);
+  const { user, isLoading, logout } = useContext(AuthContext);
   const nav = useNavigate();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const user = await appwriteService.getCurrentUser();
-        if (user) {
-          setUserName(user.name || user.email);
-          setIsPremium(user.labels?.includes('premium') || false);
-        }
-      } catch (err) {
-        console.error('Fetch user error:', err);
-      }
-    };
-    fetchUser();
-  }, []);
+  const isPremium = user?.labels?.includes('premium') || false;
+  const userName = user ? user.name || user.email : '';
 
   return (
     <nav className="bg-indigo-800 text-white py-4 px-4 sm:px-6 lg:px-8">
@@ -41,7 +28,9 @@ const Navbar = () => {
           >
             Premium
           </Link>
-          {userName ? (
+          {isLoading ? (
+            <span className="text-sm">...</span>
+          ) : userName ? (
             <>
               <span className="text-sm">
                 Hey, {userName}
@@ -49,8 +38,8 @@ const Navbar = () => {
               </span>
               <button
                 onClick={async () => {
-                  await appwriteService.logout();
-                  nav('/login');
+                  await logout();
+                  nav('/login', { replace: true });
                 }}
                 className="text-sm hover:underline"
               >
@@ -62,7 +51,7 @@ const Navbar = () => {
               <Link to="/login" className="text-sm hover:underline">
                 Log In
               </Link>
-              <Link to="/register" className="text-sm hover:underline">
+              <Link to="/signup" className="text-sm hover:underline">
                 Sign Up
               </Link>
             </>

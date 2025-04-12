@@ -7,14 +7,16 @@ import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
 import Premium from "./pages/Premium";
 import Navbar from "./components/Navbar";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
     return (
-        <>
-                <Navbar />
+        <AuthProvider>
+            <Navbar />
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<SignUp />} />
                 <Route
                     path="/projectgenerator"
                     element={
@@ -23,14 +25,17 @@ function App() {
                         </PrivateRoute>
                     }
                 />
-                <Route path="/login" element={<Login />} />
-
-                <Route path="/signup" element={<SignUp />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/premium" element={<Premium />} />
+                <Route
+                    path="/premium"
+                    element={
+                        <PrivateRoute>
+                            <Premium />
+                        </PrivateRoute>
+                    }
+                />
                 <Route path="*" element={<NotFound />} />
             </Routes>
-        </>
+        </AuthProvider>
     );
 }
 
