@@ -307,36 +307,38 @@ const ProjectGenerator = () => {
     }
   };
 
-  // Generate idea via Appwrite Function (not direct Groq call)
-  const handleGenerate = async () => {
-    if (!isPremium && dailyCount >= 3) {
-      setError('Free limit reached! Get premium for ₹100/month.');
-      return;
-    }
+// Generate idea
+const handleGenerate = async () => {
+  if (!isPremium && dailyCount >= 3) {
+    setError('Free limit reached! Get premium for ₹100/month.');
+    return;
+  }
 
-    setLoading(true);
-    setError('');
-    try {
-      const execution = await appwriteService.executeFunction(
-        'generateIdea',
-        JSON.stringify({ branch, difficulty })
-      );
-      const ideaText = JSON.parse(execution.responseBody).idea;
-      setIdea(ideaText);
-
-      // Update limit for free users
-      if (!isPremium) {
-        const today = new Date().toISOString().split('T')[0];
-        await appwriteService.updateLimit(userId, today, dailyCount + 1);
-        setDailyCount(dailyCount + 1);
+  setLoading(true);
+  setError('');
+  try {
+    const res = await axios.post(
+      'https://api.groq.com/openai/v1/chat/completions',
+      {
+        model: 'llama3-70b-8192',
+        messages: [
+          {
+            role: 'user',
+            content: `Suggest a ${difficulty} level final year project idea for a ${branch} student. Keep it under 5 lines, no markdown or formatting.`,
+          },
+        ],
+        temperature: 0.7,
+        max_tokens: 300,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
       }
-    } catch (err) {
-      setError('Failed to generate idea. Try again.');
-      console.error('Generate error:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    );
+
+
 
   // Save idea
   const handleSave = async () => {
