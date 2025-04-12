@@ -72,57 +72,77 @@ const appwriteService = {
         }
     },
 
+    async deleteIdea(ideaId) {
+        try {
+            console.log("Deleting idea:", { ideaId }); // Debug
+            await databases.deleteDocument(
+                import.meta.env.VITE_APPWRITE_DATABASE_ID,
+                import.meta.env.VITE_PROJECT_COLLECTION_ID,
+                ideaId
+            );
+            console.log("Idea deleted:", { ideaId });
+        } catch (error) {
+            console.error("Delete idea failed:", error);
+            throw error; // Let UI handle
+        }
+    },
+
     async getLimit(userId, date) {
         try {
-          console.log('getLimit inputs:', { userId, date, db: import.meta.env.VITE_APPWRITE_DATABASE_ID, coll: import.meta.env.VITE_LIMITS_COLLECTION_ID });
-          const response = await databases.listDocuments(
-            import.meta.env.VITE_APPWRITE_DATABASE_ID,
-            import.meta.env.VITE_LIMITS_COLLECTION_ID,
-            [Query.equal('userId', userId), Query.equal('date', date)]
-          );
-          console.log('getLimit response:', response.documents);
-          return response.documents[0] || { count: 0 };
-        } catch (error) {
-          console.error('Get limit failed:', error);
-          return { count: 0 };
-        }
-      },
-      
-      async updateLimit(userId, date, count) {
-        try {
-          console.log('updateLimit inputs:', { userId, date, count });
-          const response = await databases.listDocuments(
-            import.meta.env.VITE_APPWRITE_DATABASE_ID,
-            import.meta.env.VITE_LIMITS_COLLECTION_ID,
-            [Query.equal('userId', userId), Query.equal('date', date)]
-          );
-          console.log('updateLimit response:', response.documents);
-          if (response.documents.length) {
-            console.log('Updating document:', response.documents[0].$id);
-            await databases.updateDocument(
-              import.meta.env.VITE_APPWRITE_DATABASE_ID,
-              import.meta.env.VITE_LIMITS_COLLECTION_ID,
-              response.documents[0].$id,
-              { count }
-            );
-          } else {
-            console.log('Creating new limit document');
-            await databases.createDocument(
-              import.meta.env.VITE_APPWRITE_DATABASE_ID,
-              import.meta.env.VITE_LIMITS_COLLECTION_ID,
-              ID.unique(),
-              {
+            console.log("getLimit inputs:", {
                 userId,
                 date,
-                count,
-              }
+                db: import.meta.env.VITE_APPWRITE_DATABASE_ID,
+                coll: import.meta.env.VITE_LIMITS_COLLECTION_ID,
+            });
+            const response = await databases.listDocuments(
+                import.meta.env.VITE_APPWRITE_DATABASE_ID,
+                import.meta.env.VITE_LIMITS_COLLECTION_ID,
+                [Query.equal("userId", userId), Query.equal("date", date)]
             );
-          }
+            console.log("getLimit response:", response.documents);
+            return response.documents[0] || { count: 0 };
         } catch (error) {
-          console.error('Update limit failed:', error);
-          // Don’t throw—let UI handle
+            console.error("Get limit failed:", error);
+            return { count: 0 };
         }
-      },
+    },
+
+    async updateLimit(userId, date, count) {
+        try {
+            console.log("updateLimit inputs:", { userId, date, count });
+            const response = await databases.listDocuments(
+                import.meta.env.VITE_APPWRITE_DATABASE_ID,
+                import.meta.env.VITE_LIMITS_COLLECTION_ID,
+                [Query.equal("userId", userId), Query.equal("date", date)]
+            );
+            console.log("updateLimit response:", response.documents);
+            if (response.documents.length) {
+                console.log("Updating document:", response.documents[0].$id);
+                await databases.updateDocument(
+                    import.meta.env.VITE_APPWRITE_DATABASE_ID,
+                    import.meta.env.VITE_LIMITS_COLLECTION_ID,
+                    response.documents[0].$id,
+                    { count }
+                );
+            } else {
+                console.log("Creating new limit document");
+                await databases.createDocument(
+                    import.meta.env.VITE_APPWRITE_DATABASE_ID,
+                    import.meta.env.VITE_LIMITS_COLLECTION_ID,
+                    ID.unique(),
+                    {
+                        userId,
+                        date,
+                        count,
+                    }
+                );
+            }
+        } catch (error) {
+            console.error("Update limit failed:", error);
+            // Don’t throw—let UI handle
+        }
+    },
 };
 
 export default appwriteService;

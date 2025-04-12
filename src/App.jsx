@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import PrivateRoute from "./components/PrivateRoute";
 import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
+import Premium from "./pages/Premium";
 
 function App() {
     return (
@@ -24,6 +25,7 @@ function App() {
 
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/premium" element={<Premium />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </>
