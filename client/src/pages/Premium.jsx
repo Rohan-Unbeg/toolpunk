@@ -35,7 +35,7 @@ const Premium = () => {
             const amount = 100;
 
             const res = await fetch(
-                "https://toolpunk-api.onrender.com/api/create-order",
+                "https://toolpunk-api.onrender.com/api/create-order/",
                 {
                     mode: 'cors',
                     method: "POST",
