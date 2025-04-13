@@ -88,7 +88,6 @@ import dotenv from "dotenv";
 dotenv.config();
 const app = express();
 
-const allowedOrigins = ["http://localhost:5173", "https://toolpunk.vercel.app"];
 
 // Trust proxy (important for Render.com)
 app.set("trust proxy", 1);
@@ -103,39 +102,42 @@ app.use((req, res, next) => {
 // CORS configuration (choose one approach below)
 
 // APPROACH 1: Simple CORS (all origins allowed - for testing)
+// app.use(
+//     cors({
+//         origin: "*",
+//         methods: ["GET", "POST", "OPTIONS"],
+//         allowedHeaders: ["Content-Type", "Authorization"],
+//     })
+// );
+
+// APPROACH 2: Controlled CORS (production-ready)
+
+const allowedOrigins = ["http://localhost:5173", "https://toolpunk.vercel.app"];
+
 app.use(
     cors({
-        origin: "*",
+        origin: (origin, callback) => {
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error("Not allowed by CORS"));
+            }
+        },
         methods: ["GET", "POST", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],
+        credentials: true,
     })
 );
-
-/* 
-// APPROACH 2: Controlled CORS (production-ready)
-app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error("Not allowed by CORS"));
-        }
-    },
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true
-}));
-*/
 
 // Handle OPTIONS requests
 // app.options("/{*any}", cors());
 // Explicit OPTIONS handler for all routes
-app.options('/{*any}', (req, res) => {
-    res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+app.options("/{*any}", (req, res) => {
+    res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     res.status(204).end();
-  });
+});
 
 // Body parser
 app.use(express.json());
