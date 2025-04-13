@@ -14,17 +14,19 @@ const allowedOrigins = [
   "https://toolpunk.vercel.app",
 ];
 
-const corsOptions = {
-  origin: (origin, callback) => {
-    // allow requests with no origin (like curl, Postman, etc.)
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-};
+// const corsOptions = {
+//   origin: (origin, callback) => {
+//     // allow requests with no origin (like curl, Postman, etc.)
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error("Not allowed by CORS"));
+//     }
+//   },
+//   credentials: true,
+// };
+
+const corsOptions = { origin: "*" };
 
 // CORS only for API routes
 app.use("/api", cors(corsOptions));
