@@ -32,9 +32,7 @@ const corsOptions = { origin: "*" };
 app.use("/api", cors(corsOptions));
 
 app.use("/api", (req, res, next) => {
-  res.header("Access-Control-Allow-Origin", allowedOrigins.join(","));
-  res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
+  console.log(`📢 Incoming ${req.method} request to ${req.path}`);
   next();
 });
 
