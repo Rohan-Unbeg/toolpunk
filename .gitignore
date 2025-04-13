@@ -1,11 +1,15 @@
-# API (Backend)
+# API
 api/node_modules/
-api/.env*
+api/.env
+api/package-lock.json
+api/bun.lock
 
-# Client (Frontend)
+# Client
 client/node_modules/
-client/dist/
-client/.env*
+client/.env
+client/package-lock.json
+client/bun.lock
+client/.vite/
 
 # General
 .DS_Store

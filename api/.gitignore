@@ -1,22 +1,4 @@
-# API (Node.js/Express)
-api/node_modules/
-api/.env
-api/.env.local
-api/.env.development
-api/.env.test
-api/.env.production
-api/npm-debug.log
-api/yarn-debug.log
-api/yarn-error.log
-api/.pnp
-api/.pnp.js
-api/.DS_Store
-
-# General
-.DS_Store
-*.log
-.idea/
-.vscode/
-*.tmp
-*.bak
-*.swp
+node_modules/
+.env
+package-lock.json
+bun.lock
