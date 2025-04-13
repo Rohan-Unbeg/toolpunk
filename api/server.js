@@ -26,11 +26,11 @@ const corsOptions = {
 };
 
 
-app.options("/api/*", cors(corsOptions)); // important for preflight!
+// app.options("/api/*", cors(corsOptions)); // important for preflight!
 
 
 // 2) apply CORS to all /api routes (including OPTIONS preflight)
-app.use("/api", cors(corsOptions));
+app.options("/api", cors(corsOptions));
 
 app.use(express.json());
 
