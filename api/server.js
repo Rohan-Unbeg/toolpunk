@@ -128,7 +128,7 @@ app.use(cors({
 */
 
 // Handle OPTIONS requests
-app.options("*", cors());
+app.options("/{*any}", cors());
 
 // Body parser
 app.use(express.json());
@@ -157,12 +157,6 @@ app.get("/api/health", (req, res) => {
         origin: req.headers.origin || "none",
         proxy: req.ip,
     });
-});
-
-// 404 handler
-app.use((req, res) => {
-    console.log("404 hit:", req.path);
-    res.status(404).json({ error: "Not Found" });
 });
 
 const port = 3000;
