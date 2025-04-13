@@ -1,0 +1,14 @@
+# API (Backend)
+api/node_modules/
+api/.env*
+
+# Client (Frontend)
+client/node_modules/
+client/dist/
+client/.env*
+
+# General
+.DS_Store
+*.log
+.idea/
+.vscode/
