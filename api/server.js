@@ -8,6 +8,18 @@ const app = express();
 
 const allowedOrigins = ["http://localhost:5173", "https://toolpunk.vercel.app"];
 
+app.set("trust proxy", 1); // or true
+
+// Add this before CORS middleware
+app.use((req, res, next) => {
+    console.log("Received Origin:", req.headers.origin);
+    next();
+});
+
+app.options("*", cors()); // Handle all OPTIONS requests
+
+app.use(cors({ origin: "*" }));
+
 app.use(
     cors({
         origin: (origin, callback) => {
