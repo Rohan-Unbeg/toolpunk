@@ -6,6 +6,7 @@ dotenv.config();
 const router = express.Router();
 
 router.post("/", async (req, res) => {
+  console.log("✅ Create Order Request Received:", req.body); // Debug log
   const { amount, currency = "INR" } = req.body;
 
   if (!amount) {

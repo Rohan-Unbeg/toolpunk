@@ -29,6 +29,13 @@ const corsOptions = {
 // CORS only for API routes
 app.use("/api", cors(corsOptions));
 
+app.use("/api", (req, res, next) => {
+  res.header("Access-Control-Allow-Origin", allowedOrigins.join(","));
+  res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
+
 app.use(express.json());
 
 // API routes
@@ -37,7 +44,7 @@ app.use("/api/verify-payment", verifyPaymentRoute);
 
 app.get("/api/health", (req, res) => {
   res.json({
-    status: "OK",
+    status: "OK", 
     origin: req.headers.origin || "none",
     proxy: req.ip,
   });

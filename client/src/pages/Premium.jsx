@@ -37,7 +37,6 @@ const Premium = () => {
             const res = await fetch(
                 "https://toolpunk-api.onrender.com/api/create-order/",
                 {
-                    mode: 'cors',
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ amount, userId }),
@@ -45,8 +44,10 @@ const Premium = () => {
             );
 
             const data = await res.json();
-            if (!res.ok)
-                throw new Error(data.error || "Failed to create order");
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.error || "Failed to create order");
+            }
 
             const scriptLoaded = await loadRazorpayScript();
             if (!scriptLoaded) {
