@@ -2,16 +2,13 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
-import createOrder from "./create-order.js";
-import verifyPayment from "./verify-payment.js";
-
 dotenv.config();
 const app = express();
 const PORT = 3000;
 
 app.use(
     cors({
-        origin: "http://localhost:5173",
+        origin: "https://toolpunk-api.onrender.com",
         credentials: true,
     })
 );
