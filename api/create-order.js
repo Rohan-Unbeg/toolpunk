@@ -1,4 +1,3 @@
-// /api/create-order.js
 import Razorpay from "razorpay";
 import dotenv from "dotenv";
 
