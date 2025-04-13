@@ -17,24 +17,29 @@ app.use((req, res, next) => {
 });
 
 app.options("*", cors()); // Handle all OPTIONS requests
+// Add this before CORS middleware
+app.use((req, res, next) => {
+    console.log("Received Origin:", req.headers.origin);
+    next();
+});
 
 app.use(cors({ origin: "*" }));
 
-app.use(
-    cors({
-        origin: (origin, callback) => {
-            console.log("CORS origin requested:", origin);
-            if (!origin || allowedOrigins.includes(origin)) {
-                callback(null, true);
-            } else {
-                callback(new Error("Not allowed by CORS"));
-            }
-        },
-        methods: ["GET", "POST", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization"],
-        credentials: true,
-    })
-);
+// app.use(
+//     cors({
+//         origin: (origin, callback) => {
+//             console.log("CORS origin requested:", origin);
+//             if (!origin || allowedOrigins.includes(origin)) {
+//                 callback(null, true);
+//             } else {
+//                 callback(new Error("Not allowed by CORS"));
+//             }
+//         },
+//         methods: ["GET", "POST", "OPTIONS"],
+//         allowedHeaders: ["Content-Type", "Authorization"],
+//         credentials: true,
+//     })
+// );
 
 app.use(express.json());
 
