@@ -75,7 +75,7 @@ const Premium = () => {
                         return;
                     }
                     const verifyRes = await fetch(
-                        "https://toolpunk-api.onrender.com/api/verify-payment",
+                        "https://toolpunk.onrender.com/api/verify-payment",
                         {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
