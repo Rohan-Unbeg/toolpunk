@@ -1,5 +1,4 @@
-// /client/src/pages/Premium.jsx
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react"; // Add useEffect
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { motion } from "framer-motion";
@@ -8,9 +7,27 @@ import { FaCheckCircle, FaLock, FaSpinner } from "react-icons/fa";
 const Premium = () => {
     const [loading, setLoading] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [error, setError] = useState(null);
+    const [authLoaded, setAuthLoaded] = useState(false); // Renamed for clarity
     const { user } = useContext(AuthContext);
     const isPremium = user?.labels?.includes("premium") || false;
     const nav = useNavigate();
+
+    // Wait for auth check
+    useEffect(() => {
+        // Explicitly check undefined to catch initial state
+        if (user !== undefined) {
+            setAuthLoaded(true); // Auth resolved (user is null or object)
+        }
+    }, [user]);
+
+    if (!authLoaded) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-indigo-50 via-purple-50 to-blue-50">
+                <FaSpinner className="animate-spin text-indigo-600 text-4xl" />
+            </div>
+        );
+    }
 
     const loadRazorpayScript = () => {
         return new Promise((resolve) => {
@@ -24,29 +41,29 @@ const Premium = () => {
 
     const handlePayment = async () => {
         if (!user) {
-            alert("Please login first!");
+            setError("Please login first!");
             nav("/login");
             return;
         }
 
         setLoading(true);
+        setError(null); // Clear previous errors
         try {
             const userId = user.$id;
             const amount = 100;
 
-            const res = await fetch(
-                "https://toolpunk.onrender.com/api/create-order",
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ amount, userId }),
-                }
-            );
+            const apiUrl =
+                import.meta.env.VITE_API_URL ||
+                "https://toolpunk-api.onrender.com"; // Use env var
+            const res = await fetch(`${apiUrl}/api/create-order`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ amount, userId }),
+            });
 
             const data = await res.json();
             if (!res.ok) {
-                const errorData = await res.json().catch(() => ({}));
-                throw new Error(errorData.error || "Failed to create order");
+                throw new Error(data.error || "Failed to create order");
             }
 
             const scriptLoaded = await loadRazorpayScript();
@@ -65,17 +82,18 @@ const Premium = () => {
                 order_id: data.order_id,
                 handler: async function (response) {
                     setIsProcessing(true);
+                    setError(null);
                     if (
                         !response.razorpay_payment_id ||
                         !response.razorpay_order_id ||
                         !response.razorpay_signature
                     ) {
-                        alert("Incomplete payment data. Please try again.");
+                        setError("Incomplete payment data. Please try again.");
                         setIsProcessing(false);
                         return;
                     }
                     const verifyRes = await fetch(
-                        "https://toolpunk.onrender.com/api/verify-payment",
+                        `${apiUrl}/api/verify-payment`,
                         {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
@@ -91,11 +109,11 @@ const Premium = () => {
 
                     const verifyData = await verifyRes.json();
                     if (verifyData.success) {
-                        alert("🎉 Premium activated!");
+                        setError(null);
                         setIsProcessing(false);
-                        window.location.reload();
+                        window.location.reload(); // Success, no banner needed
                     } else {
-                        alert(
+                        setError(
                             "⚠️ Payment verification failed: " +
                                 (verifyData.error || "Unknown error")
                         );
@@ -103,19 +121,19 @@ const Premium = () => {
                     }
                 },
                 prefill: { email: user.email || "" },
-                theme: { color: "#4F46E5" }, // Indigo to match Toolpunk
+                theme: { color: "#4F46E5" },
             };
 
             const rzp = new window.Razorpay(options);
             rzp.on("payment.failed", function (response) {
-                alert(
+                setError(
                     "Payment failed: " +
                         (response.error.description || "Unknown error")
                 );
             });
             rzp.open();
         } catch (err) {
-            alert(err.message || "Something went wrong with the payment.");
+            setError(err.message || "Something went wrong with the payment.");
         } finally {
             setLoading(false);
         }
@@ -151,6 +169,23 @@ const Premium = () => {
                     />
                 ))}
             </div>
+
+            {error && (
+                <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="mb-6 p-4 bg-red-50 text-red-800 rounded-lg shadow-md flex items-center justify-between max-w-2xl mx-auto"
+                >
+                    <span>{error}</span>
+                    <button
+                        onClick={() => setError(null)}
+                        className="text-red-600 hover:text-red-800"
+                    >
+                        ✕
+                    </button>
+                </motion.div>
+            )}
 
             <div className="max-w-5xl mx-auto relative z-10">
                 {/* Hero */}

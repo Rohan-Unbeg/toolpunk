@@ -1,25 +1,24 @@
 import React, { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import appwriteService from "../services/appwrite";
+import { FaSpinner } from "react-icons/fa";
 
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true); // Starts as true
     const navigate = useNavigate();
 
-    // Initialize auth state
     useEffect(() => {
         const initAuth = async () => {
             try {
                 const currentUser = await appwriteService.getCurrentUser();
                 setUser(currentUser);
             } catch (error) {
-                console.error("Auth init error:", error);
                 setUser(null);
             } finally {
-                setIsLoading(false);
+                setIsLoading(false); // Mark loading as complete
             }
         };
         initAuth();
@@ -107,7 +106,13 @@ export const AuthProvider = ({ children }) => {
         <AuthContext.Provider
             value={{ user, isLoading, login, loginWithGoogle, logout, signup }}
         >
-            {children}
+            {isLoading ? (
+                <div className="min-h-screen flex items-center justify-center">
+                    <FaSpinner className="animate-spin text-indigo-600 text-4xl" />
+                </div>
+            ) : (
+                children
+            )}
         </AuthContext.Provider>
     );
 };
