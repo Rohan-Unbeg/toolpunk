@@ -14,7 +14,7 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      console.log("CORS origin requested:", origin); // Debug
+      console.log("CORS origin requested:", origin);
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -30,8 +30,18 @@ app.use(express.json());
 
 // Debug all requests
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path} from origin: ${req.headers.origin}`);
+  console.log(`${req.method} ${req.path} from origin: ${req.headers.origin || "undefined"}`);
   next();
+});
+
+// Root route
+app.get("/", (req, res) => {
+  res.json({ message: "Toolpunk API is live!" });
+});
+
+// Health check
+app.get("/api/health", (req, res) => {
+  res.json({ status: "OK", origin: req.headers.origin || "none" });
 });
 
 // Routes
@@ -41,9 +51,10 @@ import verifyPaymentRoute from "./verify-payment.js";
 app.use("/api/create-order", createOrderRoute);
 app.use("/api/verify-payment", verifyPaymentRoute);
 
-// Health check
-app.get("/api/health", (req, res) => {
-  res.json({ status: "OK", origin: req.headers.origin });
+// Catch-all
+app.use((req, res) => {
+  console.log("404 hit:", req.path);
+  res.status(404).json({ error: "Not Found" });
 });
 
 const port = process.env.PORT || 3000;
