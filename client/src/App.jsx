@@ -7,7 +7,15 @@ import SignUp from "./pages/SignUp";
 import NotFound from "./pages/NotFound";
 import Premium from "./pages/Premium";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+
 import { AuthProvider } from "./context/AuthContext";
+import {
+    PrivacyPolicy,
+    RefundPolicy,
+    ShippingPolicy,
+    TermsAndConditions,
+} from "./pages/PolicyPage";
 
 function App() {
     return (
@@ -34,7 +42,12 @@ function App() {
                     }
                 />
                 <Route path="*" element={<NotFound />} />
+                <Route path="/terms" element={<TermsAndConditions />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/refunds" element={<RefundPolicy />} />
+                <Route path="/shipping" element={<ShippingPolicy />} />
             </Routes>
+            <Footer />
         </AuthProvider>
     );
 }

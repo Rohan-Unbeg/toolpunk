@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import appwriteService from "../services/appwrite";
 import { saveAs } from "file-saver";
 import { AuthContext } from "../context/AuthContext";
+import { jsPDF } from "jspdf";
 
 const ProjectGenerator = () => {
   const { user, logout } = useContext(AuthContext);
@@ -24,7 +25,10 @@ const ProjectGenerator = () => {
   const [activeTab, setActiveTab] = useState('generator');
   const branches = ["CSE", "ECE", "Mechanical", "Civil", "IT"];
   const difficulties = ["Easy", "Medium", "Hard"];
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [ideaToDelete, setIdeaToDelete] = useState(null);
   const nav = useNavigate();
+
 
   useEffect(() => {
     if (userId) {
@@ -114,24 +118,29 @@ const ProjectGenerator = () => {
     }
   };
 
-  const handleDelete = async (ideaId) => {
-    if (!window.confirm("Are you sure you want to delete this idea?")) return;
-    try {
-      await appwriteService.deleteIdea(ideaId);
-      setSavedIdeas(savedIdeas.filter((i) => i.$id !== ideaId));
+  // const handleDelete = async (ideaId) => {
+  //   if (!window.confirm("Are you sure you want to delete this idea?")) return;
+  //   try {
+  //     await appwriteService.deleteIdea(ideaId);
+  //     setSavedIdeas(savedIdeas.filter((i) => i.$id !== ideaId));
       
-      // Show delete notification
-      const deleteNotification = document.getElementById('deleteNotification');
-      deleteNotification.classList.remove('hidden');
-      deleteNotification.classList.add('flex');
-      setTimeout(() => {
-        deleteNotification.classList.add('hidden');
-        deleteNotification.classList.remove('flex');
-      }, 3000);
-    } catch (err) {
-      setError("Failed to delete idea.");
-      console.error("Delete error:", err);
-    }
+  //     // Show delete notification
+  //     const deleteNotification = document.getElementById('deleteNotification');
+  //     deleteNotification.classList.remove('hidden');
+  //     deleteNotification.classList.add('flex');
+  //     setTimeout(() => {
+  //       deleteNotification.classList.add('hidden');
+  //       deleteNotification.classList.remove('flex');
+  //     }, 3000);
+  //   } catch (err) {
+  //     setError("Failed to delete idea.");
+  //     console.error("Delete error:", err);
+  //   }
+  // };
+
+  const handleDelete = (ideaId) => {
+    setIdeaToDelete(ideaId);
+    setShowDeleteModal(true);
   };
 
   const handleCopy = (text) => {
@@ -152,18 +161,29 @@ const ProjectGenerator = () => {
       setError("Export is premium-only. Upgrade for ₹100/month!");
       return;
     }
-    const blob = new Blob([`Project Idea\n\n${ideaText}`], {
-      type: "text/plain",
-    });
-    saveAs(blob, "project-idea.txt");
-    
+  
+    // Create a new PDF
+    const doc = new jsPDF();
+  
+    // Add text
+    doc.setFont("helvetica");
+    doc.setFontSize(14);
+    doc.text("Project Idea", 10, 20);
+    doc.setFontSize(12);
+    // doc.text(ideaText, 10, 30);
+    doc.text(doc.splitTextToSize(ideaText, 180), 10, 30);
+
+  
+    // Save as PDF
+    doc.save("project-idea.pdf");
+  
     // Show export notification
-    const exportNotification = document.getElementById('exportNotification');
-    exportNotification.classList.remove('hidden');
-    exportNotification.classList.add('flex');
+    const exportNotification = document.getElementById("exportNotification");
+    exportNotification.classList.remove("hidden");
+    exportNotification.classList.add("flex");
     setTimeout(() => {
-      exportNotification.classList.add('hidden');
-      exportNotification.classList.remove('flex');
+      exportNotification.classList.add("hidden");
+      exportNotification.classList.remove("flex");
     }, 3000);
   };
 
@@ -217,7 +237,51 @@ const ProjectGenerator = () => {
   };
 
   return (
+    
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-indigo-900 via-purple-800 to-indigo-800 pt-20 pb-12 px-4 overflow-hidden font-['Poppins',sans-serif]">
+      {showDeleteModal && (
+  <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center px-4">
+    <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 animate-fadeIn space-y-4 text-center">
+      <h2 className="text-xl font-semibold text-gray-800">Delete this idea?</h2>
+      <p className="text-gray-600 text-sm">
+        This action is permanent and cannot be undone.
+      </p>
+      <div className="flex justify-center gap-4 pt-2">
+        <button
+          onClick={async () => {
+            try {
+              await appwriteService.deleteIdea(ideaToDelete);
+              setSavedIdeas(savedIdeas.filter((i) => i.$id !== ideaToDelete));
+              setShowDeleteModal(false);
+
+              const deleteNotification = document.getElementById('deleteNotification');
+              deleteNotification.classList.remove('hidden');
+              deleteNotification.classList.add('flex');
+              setTimeout(() => {
+                deleteNotification.classList.add('hidden');
+                deleteNotification.classList.remove('flex');
+              }, 3000);
+            } catch (err) {
+              setError("Failed to delete idea.");
+              console.error("Delete error:", err);
+              setShowDeleteModal(false);
+            }
+          }}
+          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl transition"
+        >
+          Yes, Delete
+        </button>
+        <button
+          onClick={() => setShowDeleteModal(false)}
+          className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-xl transition"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
       {/* Animated background elements */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         {[...Array(8)].map((_, i) => (
@@ -676,7 +740,7 @@ const ProjectGenerator = () => {
                           className="p-2 bg-red-800/40 hover:bg-red-700/60 text-red-300 rounded-lg transition-all duration-300 tooltip-container"
                         >
                           <FaTrash />
-                          <span className="tooltip-text">Delete</span>
+                          <span className="tooltip-text cursor-pointer">Delete</span>
                         </motion.button>
                       </div>
                     </div>
