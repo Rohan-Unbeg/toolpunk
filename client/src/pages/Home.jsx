@@ -1,5 +1,7 @@
+// /client/src/pages/Home.jsx
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import appwriteService from '../services/appwrite';
 
 const Home = () => {
@@ -23,69 +25,137 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-indigo-50 via-purple-50 to-blue-50 pt-20 pb-8 px-4 overflow-hidden">
+      <div className="absolute inset-0 bg-grid-indigo opacity-5 z-0"></div>
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        {[...Array(6)].map((_, i) => (
+          <div
+            key={i}
+            className="blob"
+            style={{
+              position: 'absolute',
+              top: `${Math.random() * 80}%`,
+              left: `${Math.random() * 80}%`,
+              width: `${Math.random() * 200 + 100}px`,
+              height: `${Math.random() * 200 + 100}px`,
+              background: `radial-gradient(circle, rgba(${Math.floor(
+                Math.random() * 100 + 155
+              )}, ${Math.floor(Math.random() * 50 + 90)}, ${Math.floor(
+                Math.random() * 155 + 100
+              )}, 0.15), transparent)`,
+              borderRadius: '50%',
+              filter: 'blur(60px)',
+              animation: `float ${Math.random() * 10 + 15}s ease-in-out infinite`,
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="max-w-5xl mx-auto relative z-10">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-indigo-800 tracking-tight">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-12"
+        >
+          <motion.h1
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-4xl sm:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 tracking-tight"
+          >
             Welcome to Toolpunk
-          </h1>
-          <p className="mt-4 text-lg sm:text-xl text-gray-600">
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="mt-4 text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto"
+          >
             Free tools for students: project ideas, railway PNR checks, and more!
-          </p>
+          </motion.p>
           {userName ? (
-            <div className="mt-6 flex justify-center items-center gap-4">
-              <span className="text-sm text-gray-700">
-                Hey, <span className="font-semibold">{userName}</span>
-                {isPremium ? ' 🌟 (Premium)' : ''}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="mt-6 flex justify-center items-center gap-4"
+            >
+              <span className="text-sm font-medium text-gray-700">
+                Hey,{' '}
+                <span className="font-semibold">
+                  {userName}
+                  {isPremium && (
+                    <span className="ml-1 text-yellow-500">🌟 Premium</span>
+                  )}
+                </span>
               </span>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={async () => {
                   await appwriteService.logout();
                   nav('/login');
                 }}
-                className="text-red-500 text-sm hover:underline"
+                className="text-sm text-red-500 hover:bg-red-50 px-3 py-1 rounded-full transition"
               >
                 Logout
-              </button>
-            </div>
+              </motion.button>
+            </motion.div>
           ) : (
-            <div className="mt-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="mt-6 flex justify-center gap-4"
+            >
               <Link
                 to="/login"
-                className="text-indigo-600 hover:underline text-sm mr-4"
+                className="text-sm font-medium text-indigo-600 hover:bg-indigo-50 px-4 py-2 rounded-full transition"
               >
                 Log In
               </Link>
               <Link
-                to="/register"
-                className="text-indigo-600 hover:underline text-sm"
+                to="/signup" // Updated to match your route
+                className="text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-2 rounded-full hover:from-indigo-700 hover:to-purple-700 transition"
               >
                 Sign Up
               </Link>
-            </div>
+            </motion.div>
           )}
-        </div>
+        </motion.div>
 
         {/* Tools */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="bg-white p-6 rounded-xl shadow-sm">
-            <h2 className="text-xl font-semibold text-gray-800 mb-2">
-              🎓 Project Ideas
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
+          <motion.div
+            whileHover={{ scale: 1.02, boxShadow: '0 5px 15px rgba(0,0,0,0.1)' }}
+            className="bg-white p-6 rounded-2xl shadow-sm ring-1 ring-indigo-100/50"
+          >
+            <h2 className="text-xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
+              <span className="text-2xl">🎓</span> Project Ideas
             </h2>
             <p className="text-gray-600 mb-4">
               Get 3 free project ideas daily or go premium for unlimited.
             </p>
             <Link
               to="/projectgenerator"
-              className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
+              className="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition"
             >
               Try Now
             </Link>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-sm opacity-50">
-            <h2 className="text-xl font-semibold text-gray-800 mb-2">
-              🚂 PNR Checker
+          </motion.div>
+          <motion.div
+            whileHover={{ scale: 1.02, boxShadow: '0 5px 15px rgba(0,0,0,0.1)' }}
+            className="bg-white p-6 rounded-2xl shadow-sm opacity-75"
+          >
+            <h2 className="text-xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
+              <span className="text-2xl">🚂</span> PNR Checker
             </h2>
             <p className="text-gray-600 mb-4">
               Check railway PNR status (coming soon).
@@ -96,25 +166,30 @@ const Home = () => {
             >
               Coming Soon
             </button>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Premium */}
         {!isPremium && (
-          <div className="mt-12 text-center">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="mt-12 text-center"
+          >
+            <h2 className="text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 mb-4">
               Unlock More with Premium
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 mb-6 max-w-xl mx-auto">
               Get unlimited project ideas for just ₹100/month.
             </p>
             <Link
               to="/premium"
-              className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition"
+              className="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition shadow-md hover:shadow-lg"
             >
               Go Premium
             </Link>
-          </div>
+          </motion.div>
         )}
       </div>
     </div>
