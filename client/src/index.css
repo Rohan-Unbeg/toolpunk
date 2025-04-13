@@ -70,3 +70,49 @@ html, body {
     }
   }
 
+  @keyframes sparkle {
+    0% { transform: translateY(-100%) rotate(45deg); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(200%) rotate(45deg); opacity: 0; }
+  }
+  
+  .animate-sparkle {
+    animation: sparkle 1.5s ease-in-out infinite;
+  }
+
+@property --gradient-start {
+  syntax: "<color>";
+  initial-value: #6366f1;
+  inherits: false;
+}
+@property --gradient-end {
+  syntax: "<color>";
+  initial-value: #8b5cf6;
+  inherits: false;
+}
+
+@keyframes text-gradient {
+  0% {
+    --gradient-start: #6366f1;
+    --gradient-end: #8b5cf6;
+  }
+  50% {
+    --gradient-start: #8b5cf6;
+    --gradient-end: #d946ef;
+  }
+  100% {
+    --gradient-start: #6366f1;
+    --gradient-end: #8b5cf6;
+  }
+}
+
+.animated-text-gradient {
+  animation: text-gradient 4s ease infinite;
+  color: linear-gradient(
+    to right,
+    var(--gradient-start),
+    var(--gradient-end)
+  );
+  -webkit-text-fill-color: transparent;
+  background: none !important; 
+}

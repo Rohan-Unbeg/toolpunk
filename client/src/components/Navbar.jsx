@@ -35,22 +35,52 @@ const Navbar = () => {
                 <div className="flex justify-between items-center">
                     <Link to="/" className="flex items-center space-x-2">
                         <motion.div
-                            whileHover={{ rotate: 10, scale: 1.1 }}
-                            transition={{ type: "spring", stiffness: 300 }}
-                            className="text-2xl font-extrabold"
+                            whileHover={{
+                                rotate: 5, // Single value works with spring
+                                scale: 1.1,
+                            }}
+                            transition={{
+                                type: "spring",
+                                stiffness: 300,
+                                damping: 10,
+                            }}
+                            className="origin-center"
                         >
-                            🧰
+                            <span className="text-3xl">🧰</span>
                         </motion.div>
-                        <span className="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-purple-600">
+
+                        <motion.span
+                            className="text-xl font-black tracking-tighter"
+                            style={{
+                                background:
+                                    "linear-gradient(45deg, #6366f1, #8b5cf6, #d946ef)",
+                                WebkitBackgroundClip: "text",
+                                backgroundClip: "text",
+                                color: "transparent",
+                                backgroundSize: "200% auto",
+                                filter: "drop-shadow(0 2px 1px rgba(79, 70, 229, 0.2))",
+                            }}
+                            animate={{
+                                backgroundPosition: [
+                                    "0% center",
+                                    "100% center",
+                                ],
+                            }}
+                            transition={{
+                                duration: 3,
+                                repeat: Infinity,
+                                ease: "linear",
+                            }}
+                        >
                             Toolpunk
-                        </span>
+                        </motion.span>
                     </Link>
 
                     <div className="flex items-center space-x-2 sm:space-x-4">
                         <NavLink
                             to="/projectgenerator"
                             active={isActive("/projectgenerator")}
-                            scrolled={scrolled} // Add prop
+                            scrolled={scrolled}
                         >
                             Project Ideas
                         </NavLink>
@@ -60,7 +90,7 @@ const Navbar = () => {
                                 to="/premium"
                                 active={isActive("/premium")}
                                 isPremium={true}
-                                scrolled={scrolled} // Add prop
+                                scrolled={scrolled}
                             >
                                 Premium ✨
                             </NavLink>
@@ -68,7 +98,7 @@ const Navbar = () => {
                             <NavLink
                                 to="/premium"
                                 active={isActive("/premium")}
-                                scrolled={scrolled} // Add prop
+                                scrolled={scrolled}
                             >
                                 Premium
                             </NavLink>
@@ -114,7 +144,11 @@ const Navbar = () => {
                                 </NavLink>
                                 <NavLink
                                     to="/signup"
-                                    active={isActive("/signup")}
+                                    active={
+                                        isActive("/signup") ||
+                                        (!isActive("/login") &&
+                                            !isActive("/signup"))
+                                    } // Default active for Sign Up
                                     scrolled={scrolled}
                                 >
                                     Sign Up
@@ -150,4 +184,5 @@ const NavLink = ({ children, to, active, isPremium, scrolled }) => (
         )}
     </Link>
 );
+
 export default Navbar;
