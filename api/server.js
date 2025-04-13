@@ -1,21 +1,22 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-const router = express.Router();
+
+import createOrderRoute from "./create-order.js";
+import verifyPaymentRoute from "./verify-payment.js";
 
 dotenv.config();
 const app = express();
 app.set("trust proxy", 1);
 
-// 1) only for your API routes
+// Allowed origins for PRODUCTION
 const allowedOrigins = [
-  "http://localhost:5173",
-  "https://toolpunk.vercel.app"
+  "https://toolpunk.vercel.app",
 ];
 
 const corsOptions = {
   origin: (origin, callback) => {
-    // allow requests with no origin (mobile apps, curl, health checks)
+    // allow requests with no origin (like curl, Postman, etc.)
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -25,19 +26,12 @@ const corsOptions = {
   credentials: true,
 };
 
-
-// app.options("/api/*", cors(corsOptions)); // important for preflight!
-
-
-// 2) apply CORS to all /api routes (including OPTIONS preflight)
-app.options("/api", cors(corsOptions));
+// CORS only for API routes
+app.use("/api", cors(corsOptions));
 
 app.use(express.json());
 
-// 3) mount your routers
-import createOrderRoute from "./create-order.js";
-import verifyPaymentRoute from "./verify-payment.js";
-
+// API routes
 app.use("/api/create-order", createOrderRoute);
 app.use("/api/verify-payment", verifyPaymentRoute);
 
@@ -53,7 +47,3 @@ const port = 3000;
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
-
-
-
-
