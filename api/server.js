@@ -15,9 +15,23 @@ app.use((req, res, next) => {
     next();
 });
 
-// const allowedOrigins = ["http://localhost:5173", "https://toolpunk.vercel.app"];
+const allowedOrigins = ["http://localhost:5173", "https://toolpunk.vercel.app"];
 
-app.use(cors());
+const corsOptions = {
+    origin: (origin, callback) => {
+        // `origin` will be undefined for same‑origin navigations and health checks:
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    credentials: true, // if you need cookies/auth headers
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+};
+
+app.use(cors(corsOptions));
 
 // Body parser
 app.use(express.json());
@@ -34,8 +48,6 @@ try {
     console.error("Route loading error:", err);
     process.exit(1);
 }
-
-
 
 app.get("/api/health", (req, res) => {
     res.json({
