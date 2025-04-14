@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom"; // Add useLocation
 import { AuthContext } from "../context/AuthContext";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { FaCheckCircle, FaLock, FaSpinner } from "react-icons/fa";
 
 const Premium = () => {
@@ -11,6 +11,7 @@ const Premium = () => {
     const [authLoaded, setAuthLoaded] = useState(false);
     const { user } = useContext(AuthContext);
     const isPremium = user?.labels?.includes("premium") || false;
+    const [isMessageVisible, setIsMessageVisible] = useState(false);
     const nav = useNavigate();
     const location = useLocation(); // Check query params
 
@@ -21,6 +22,10 @@ const Premium = () => {
         }
     }, [user]);
 
+    useEffect(() => {
+        console.log("Success state:", success);
+    }, [success]);
+
     // Check for payment status on redirect
     useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -28,6 +33,7 @@ const Premium = () => {
 
         if (paymentStatus === "success") {
             setSuccess("🎉 Premium activated!");
+            setIsMessageVisible(true);
 
             // Clear the query params without reloading
             const cleanUrl = window.location.pathname;
@@ -37,6 +43,7 @@ const Premium = () => {
             // await refreshUserData();
         } else if (paymentStatus === "failed") {
             setError("⚠️ Payment failed. Try again.");
+            setIsMessageVisible(true);
         }
     }, [location]);
 
@@ -91,6 +98,7 @@ const Premium = () => {
         }
     };
 
+
     return (
         <div className="min-h-screen flex flex-col bg-gradient-to-b from-indigo-50 via-purple-50 to-blue-50 pt-20 pb-12 px-4 overflow-hidden">
             <div className="absolute inset-0 bg-grid-indigo opacity-5 z-0"></div>
@@ -122,41 +130,50 @@ const Premium = () => {
                 ))}
             </div>
 
-            {error && (
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    className="mb-6 p-4 bg-red-50 text-red-800 rounded-lg shadow-md flex items-center justify-between max-w-2xl mx-auto"
-                >
-                    <span>{error}</span>
-                    <button
-                        onClick={() => setError(null)}
-                        className="text-red-600 hover:text-red-800"
-                    >
-                        ✕
-                    </button>
-                </motion.div>
-            )}
-            {success && (
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    className="mb-6 p-4 bg-green-50 text-green-800 rounded-lg shadow-md flex items-center justify-between max-w-2xl mx-auto"
-                >
-                    <span>{success}</span>
-                    <button
-                        onClick={() => {
-                            setSuccess(null);
-                            setError(null);
-                        }}
-                        className="text-green-600 hover:text-green-800"
-                    >
-                        ✕
-                    </button>
-                </motion.div>
-            )}
+            <div className="fixed top-20 left-0 right-0 z-50 pointer-events-none">
+                <AnimatePresence>
+                    {error && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            className="mb-6 mx-auto flex items-center justify-between max-w-2xl rounded-lg bg-red-50 p-4 text-red-800 shadow-md pointer-events-auto"
+                        >
+                            <span>{error}</span>
+                            <button
+                                onClick={() => setError(null)}
+                                className="ml-4 rounded-full bg-red-100 p-1 text-red-600 hover:bg-red-200 focus:outline-none"
+                                aria-label="Close error"
+                            >
+                                ✕
+                            </button>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                <AnimatePresence>
+                    {success && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            className="mb-6 mx-auto flex items-center justify-between max-w-2xl rounded-lg bg-green-50 p-4 text-green-800 shadow-md pointer-events-auto"
+                        >
+                            <span>{success}</span>
+                            <button
+                                onClick={() => {
+                                    setSuccess(null);
+                                    setIsMessageVisible(false);
+                                }}
+                                className="ml-4 rounded-full bg-green-100 p-1 text-green-600 hover:bg-green-200 focus:outline-none"
+                                aria-label="Close success"
+                            >
+                                ✕
+                            </button>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
 
             <div className="max-w-5xl mx-auto relative z-10">
                 {/* Hero */}
@@ -179,6 +196,8 @@ const Premium = () => {
                             </span>
                         )}
                     </motion.h1>
+
+                  
                     <motion.p
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}

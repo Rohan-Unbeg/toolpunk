@@ -21,6 +21,8 @@ import Contact from "./pages/Contact";
 function App() {
     return (
         <AuthProvider>
+                {/* <Route path="/testmodal" element={<TestModal />} /> */}
+
             <Navbar />
             <Routes>
                 <Route path="/" element={<Home />} />
