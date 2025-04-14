@@ -44,7 +44,7 @@ app.post("/api/instamojo-initiate", async (req, res) => {
             phone: phone || "",
             redirect_url: `${
                 process.env.NODE_ENV === "production"
-                    ? "https://toolpunk-api.onrender.com"
+                    ? "https://toolpunk.onrender.com"
                     : "http://localhost:3000"
             }/api/verify-payment?userId=${userId}`,
             send_email: true,

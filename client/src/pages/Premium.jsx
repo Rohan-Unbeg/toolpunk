@@ -24,10 +24,18 @@ const Premium = () => {
     // Check for payment status on redirect
     useEffect(() => {
         const params = new URLSearchParams(location.search);
-        if (params.get("payment") === "success") {
+        const paymentStatus = params.get("payment");
+
+        if (paymentStatus === "success") {
             setSuccess("🎉 Premium activated!");
-            setTimeout(() => window.location.reload(), 2000); // Reload after 2s
-        } else if (params.get("payment") === "failed") {
+
+            // Clear the query params without reloading
+            const cleanUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, cleanUrl);
+
+            // Optional: Manually refresh user data instead of full reload
+            // await refreshUserData();
+        } else if (paymentStatus === "failed") {
             setError("⚠️ Payment failed. Try again.");
         }
     }, [location]);
@@ -139,7 +147,10 @@ const Premium = () => {
                 >
                     <span>{success}</span>
                     <button
-                        onClick={() => setSuccess(null)}
+                        onClick={() => {
+                            setSuccess(null);
+                            setError(null);
+                        }}
                         className="text-green-600 hover:text-green-800"
                     >
                         ✕
