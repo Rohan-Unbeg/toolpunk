@@ -10,9 +10,18 @@ app.set("trust proxy", 1);
 app.use(express.json());
 
 // const corsOptions = { origin: ["https://toolpunk.vercel.app", "http://localhost:5173"] };
-const corsOptions = { origin: "*" };
+// const allowedOrigins = ["https://toolpunk.vercel.app"];
+// const corsOptions = { origin: "*" };
 
-app.use("/api", cors(corsOptions));
+// app.use("/api", cors(corsOptions));
+
+app.use(
+    cors({
+        origin: "https://toolpunk.vercel.app",
+        methods: ["GET", "POST", "OPTIONS"],
+        credentials: true,
+    })
+);
 
 // Debug log middleware
 app.use((req, res, next) => {
