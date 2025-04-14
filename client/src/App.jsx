@@ -16,6 +16,7 @@ import {
     ShippingPolicy,
     TermsAndConditions,
 } from "./pages/PolicyPage";
+import Contact from "./pages/Contact";
 
 function App() {
     return (
@@ -46,6 +47,7 @@ function App() {
                 <Route path="/privacy" element={<PrivacyPolicy />} />
                 <Route path="/refunds" element={<RefundPolicy />} />
                 <Route path="/shipping" element={<ShippingPolicy />} />
+                <Route path="/contact" element={<Contact />} />
             </Routes>
             <Footer />
         </AuthProvider>

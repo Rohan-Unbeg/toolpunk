@@ -232,7 +232,8 @@ const Premium = () => {
                                 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={handlePayment}
-                                disabled={loading || isProcessing}
+                                // disabled={loading || isProcessing}
+                                disabled
                                 className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-3 rounded-lg font-semibold text-lg hover:from-indigo-700 hover:to-purple-700 transition disabled:opacity-50 flex items-center mx-auto"
                             >
                                 {loading || isProcessing ? (

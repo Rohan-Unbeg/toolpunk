@@ -59,6 +59,9 @@ const Footer = () => {
                             </Link>
                         </li>
                         <li>
+                            <Link to="/contact">Contact</Link>
+                        </li>
+                        <li>
                             <a
                                 href="mailto:rohanunbeg0918@gmail.com"
                                 className="hover:text-white"
