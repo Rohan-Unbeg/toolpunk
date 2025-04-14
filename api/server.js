@@ -7,6 +7,14 @@ dotenv.config();
 const app = express();
 app.set("trust proxy", 1);
 
+app.use(
+  cors({
+      origin: "https://toolpunk.vercel.app",
+      methods: ["GET", "POST", "OPTIONS"],
+      credentials: true,
+  })
+)
+
 app.use(express.json());
 
 // const corsOptions = { origin: ["https://toolpunk.vercel.app", "http://localhost:5173"] };
@@ -15,13 +23,7 @@ app.use(express.json());
 
 // app.use("/api", cors(corsOptions));
 
-app.use(
-    cors({
-        origin: "https://toolpunk.vercel.app",
-        methods: ["GET", "POST", "OPTIONS"],
-        credentials: true,
-    })
-);
+;
 
 // Debug log middleware
 app.use((req, res, next) => {
