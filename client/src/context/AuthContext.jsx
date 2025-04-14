@@ -14,11 +14,18 @@ export const AuthProvider = ({ children }) => {
         const initAuth = async () => {
             try {
                 const currentUser = await appwriteService.getCurrentUser();
+                if (currentUser) {
+                    // Check email verification status
+                    if (!currentUser.emailVerification) {
+                        await logout();
+                        navigate('/login', { state: { needsVerification: true } });
+                    }
+                }
                 setUser(currentUser);
             } catch (error) {
                 setUser(null);
             } finally {
-                setIsLoading(false); // Mark loading as complete
+                setIsLoading(false);
             }
         };
         initAuth();
@@ -65,12 +72,13 @@ export const AuthProvider = ({ children }) => {
         setIsLoading(true);
         try {
             await appwriteService.register(email, password, name);
-            const currentUser = await appwriteService.getCurrentUser();
-            setUser(currentUser);
-            navigate("/projectgenerator", { replace: true });
+            console.log("User registered, verification email sent");
+            // const currentUser = await appwriteService.getCurrentUser();
+            // setUser(currentUser);
+            // navigate("/projectgenerator", { replace: true });
         } catch (error) {
             console.error("Signup error:", error);
-            setUser(null);
+            // setUser(null);
             throw error;
         } finally {
             setIsLoading(false);

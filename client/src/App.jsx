@@ -17,16 +17,20 @@ import {
     TermsAndConditions,
 } from "./pages/PolicyPage";
 import Contact from "./pages/Contact";
+import VerifyPending from "./pages/VerifyPending";
+import VerifyEmail from "./pages/VerifyEmail";
+import CheckEmail from "./pages/CheckEmail";
 
 function App() {
     return (
         <AuthProvider>
-                {/* <Route path="/testmodal" element={<TestModal />} /> */}
-
             <Navbar />
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/verify-email" element={<VerifyEmail />} />
+                <Route path="/verify-pending" element={<VerifyPending />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route
                     path="/projectgenerator"
@@ -50,6 +54,7 @@ function App() {
                 <Route path="/refunds" element={<RefundPolicy />} />
                 <Route path="/shipping" element={<ShippingPolicy />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/check-email" element={<CheckEmail />} />
             </Routes>
             <Footer />
         </AuthProvider>
