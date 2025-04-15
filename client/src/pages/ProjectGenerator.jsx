@@ -1,819 +1,581 @@
-// /client/src/pages/ProjectGenerator.jsx
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { generateIdea } from "../services/grok";
-import { FaSpinner, FaCopy, FaFilePdf, FaLock, FaSave, FaTrash, FaLightbulb, FaStar, FaGraduationCap } from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
+import {
+    FaSpinner,
+    FaCopy,
+    FaFilePdf,
+    FaLock,
+    FaSave,
+    FaTrash,
+    FaLightbulb,
+    FaStar,
+    FaGraduationCap,
+} from "react-icons/fa";
 import appwriteService from "../services/appwrite";
-import { saveAs } from "file-saver";
-import { AuthContext } from "../context/AuthContext";
 import { jsPDF } from "jspdf";
+import { AuthContext } from "../context/AuthContext";
+import { motion } from "framer-motion";
 
-const ProjectGenerator = () => {
-  const { user, logout } = useContext(AuthContext);
-  const userId = user?.$id;
-  const isPremium = user?.labels?.includes("premium") || false;
-  const [branch, setBranch] = useState("CSE");
-  const [difficulty, setDifficulty] = useState("Medium");
-  const [idea, setIdea] = useState("");
-  const [savedIdeas, setSavedIdeas] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [saveLoading, setSaveLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [dailyCount, setDailyCount] = useState(0);
-  const [showConfetti, setShowConfetti] = useState(false);
-  const [activeTab, setActiveTab] = useState('generator');
-  const branches = ["CSE", "ECE", "Mechanical", "Civil", "IT"];
-  const difficulties = ["Easy", "Medium", "Hard"];
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [ideaToDelete, setIdeaToDelete] = useState(null);
-  const nav = useNavigate();
+const ProjectGenerator = React.memo(() => {
+    const { user } = useContext(AuthContext);
+    const userId = user?.$id;
+    const isPremium = user?.labels?.includes("premium") || false;
+    const [branch, setBranch] = useState("CSE");
+    const [difficulty, setDifficulty] = useState("Medium");
+    const [idea, setIdea] = useState("");
+    const [savedIdeas, setSavedIdeas] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [saveLoading, setSaveLoading] = useState(false);
+    const [error, setError] = useState("");
+    const [dailyCount, setDailyCount] = useState(0);
+    const [activeTab, setActiveTab] = useState("generator");
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [ideaToDelete, setIdeaToDelete] = useState(null);
+    const nav = useNavigate();
 
+    const branches = ["CSE", "ECE", "Mechanical", "Civil", "IT"];
+    const difficulties = ["Easy", "Medium", "Hard"];
 
-  useEffect(() => {
-    if (userId) {
-      loadSavedIdeas(userId);
-      checkDailyLimit(userId);
-    }
-  }, [userId]);
+    useEffect(() => {
+        if (userId) {
+            loadSavedIdeas(userId);
+            checkDailyLimit(userId);
+        }
+    }, [userId]);
 
-  const checkDailyLimit = async (uid) => {
-    if (!uid) return;
-    try {
-      const today = new Date().toISOString().split("T")[0];
-      const limit = await appwriteService.getLimit(uid, today);
-      setDailyCount(limit?.count || 0);
-    } catch (err) {
-      console.error("Limit check failed:", err);
-      setDailyCount(0);
-    }
-  };
+    const checkDailyLimit = useCallback(async (uid) => {
+        if (!uid) return;
+        try {
+            const today = new Date().toISOString().split("T")[0];
+            const limit = await appwriteService.getLimit(uid, today);
+            setDailyCount(limit?.count || 0);
+        } catch (err) {
+            console.error("Limit check failed:", err);
+            setDailyCount(0);
+        }
+    }, []);
 
-  const loadSavedIdeas = async (uid) => {
-    if (!uid) return;
-    try {
-      const docs = await appwriteService.getUserIdeas(uid);
-      setSavedIdeas(docs);
-    } catch (err) {
-      setError("Failed to load saved ideas.");
-      console.error("Load ideas error:", err);
-    }
-  };
+    const loadSavedIdeas = useCallback(async (uid) => {
+        if (!uid) return;
+        try {
+            const docs = await appwriteService.getUserIdeas(uid);
+            setSavedIdeas(docs.slice(0, 10));
+        } catch (err) {
+            setError("Failed to load saved ideas.");
+            console.error("Load ideas error:", err);
+        }
+    }, []);
 
-  const handleGenerate = async () => {
-    if (!isPremium && dailyCount >= 3) {
-      setError(
-        `You've used ${dailyCount}/3 free ideas today. Upgrade to premium for unlimited ideas!`
-      );
-      return;
-    }
-    setLoading(true);
-    setError("");
-    try {
-      const text = await generateIdea(branch, difficulty);
-      setIdea(text);
-      setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 3000);
-      if (!isPremium) {
-        const today = new Date().toISOString().split("T")[0];
-        await appwriteService.updateLimit(userId, today, dailyCount + 1);
-        setDailyCount(dailyCount + 1);
-      }
-    } catch (err) {
-      setError("Failed to generate idea. Try again.");
-      console.error("Generate error:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSave = async () => {
-    if (!userId || !idea) return;
-    setSaveLoading(true);
-    setError("");
-    try {
-      const newIdea = {
-        userId,
-        branch,
-        difficulty,
-        ideaText: idea,
-        createdAt: new Date().toISOString(),
-      };
-      const saved = await appwriteService.saveProjectIdea(newIdea);
-      setSavedIdeas([{ ...newIdea, $id: saved.$id }, ...savedIdeas]);
-      
-      // Show success notification
-      const notification = document.getElementById('notification');
-      notification.classList.remove('hidden');
-      notification.classList.add('flex');
-      setTimeout(() => {
-        notification.classList.add('hidden');
-        notification.classList.remove('flex');
-      }, 3000);
-    } catch (err) {
-      setError("Failed to save idea.");
-      console.error("Save error:", err);
-    } finally {
-      setSaveLoading(false);
-    }
-  };
-
-  // const handleDelete = async (ideaId) => {
-  //   if (!window.confirm("Are you sure you want to delete this idea?")) return;
-  //   try {
-  //     await appwriteService.deleteIdea(ideaId);
-  //     setSavedIdeas(savedIdeas.filter((i) => i.$id !== ideaId));
-      
-  //     // Show delete notification
-  //     const deleteNotification = document.getElementById('deleteNotification');
-  //     deleteNotification.classList.remove('hidden');
-  //     deleteNotification.classList.add('flex');
-  //     setTimeout(() => {
-  //       deleteNotification.classList.add('hidden');
-  //       deleteNotification.classList.remove('flex');
-  //     }, 3000);
-  //   } catch (err) {
-  //     setError("Failed to delete idea.");
-  //     console.error("Delete error:", err);
-  //   }
-  // };
-
-  const handleDelete = (ideaId) => {
-    setIdeaToDelete(ideaId);
-    setShowDeleteModal(true);
-  };
-
-  const handleCopy = (text) => {
-    navigator.clipboard.writeText(text);
-    
-    // Show copy notification
-    const copyNotification = document.getElementById('copyNotification');
-    copyNotification.classList.remove('hidden');
-    copyNotification.classList.add('flex');
-    setTimeout(() => {
-      copyNotification.classList.add('hidden');
-      copyNotification.classList.remove('flex');
-    }, 3000);
-  };
-
-  const handleExportPdf = (ideaText) => {
-    if (!isPremium) {
-      setError("Export is premium-only. Upgrade for ₹100/month!");
-      return;
-    }
-  
-    // Create a new PDF
-    const doc = new jsPDF();
-  
-    // Add text
-    doc.setFont("helvetica");
-    doc.setFontSize(14);
-    doc.text("Project Idea", 10, 20);
-    doc.setFontSize(12);
-    // doc.text(ideaText, 10, 30);
-    doc.text(doc.splitTextToSize(ideaText, 180), 10, 30);
-
-  
-    // Save as PDF
-    doc.save("project-idea.pdf");
-  
-    // Show export notification
-    const exportNotification = document.getElementById("exportNotification");
-    exportNotification.classList.remove("hidden");
-    exportNotification.classList.add("flex");
-    setTimeout(() => {
-      exportNotification.classList.add("hidden");
-      exportNotification.classList.remove("flex");
-    }, 3000);
-  };
-
-  // Confetti effect animation
-  const generateConfetti = () => {
-    if (!showConfetti) return null;
-    
-    return Array.from({ length: 100 }).map((_, i) => (
-      <motion.div
-        key={i}
-        initial={{ 
-          y: -20, 
-          x: Math.random() * window.innerWidth,
-          rotate: 0,
-          opacity: 1
-        }}
-        animate={{ 
-          y: window.innerHeight + 100, 
-          x: Math.random() * window.innerWidth,
-          rotate: Math.random() * 360,
-          opacity: 0
-        }}
-        transition={{ 
-          duration: Math.random() * 2 + 1,
-          ease: "easeOut" 
-        }}
-        style={{
-          position: "fixed",
-          width: Math.random() * 10 + 5,
-          height: Math.random() * 10 + 5,
-          backgroundColor: ['#FF5555', '#5555FF', '#55FF55', '#FFFF55', '#FF55FF'][Math.floor(Math.random() * 5)],
-          borderRadius: "50%",
-          zIndex: 9999,
-        }}
-      />
-    ));
-  };
-
-  const renderStars = () => {
-    return Array.from({ length: 5 }).map((_, i) => (
-      <motion.div
-        key={i}
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: i * 0.1 }}
-        className="w-4 h-4 text-yellow-400"
-      >
-        <FaStar />
-      </motion.div>
-    ));
-  };
-
-  return (
-    
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-indigo-900 via-purple-800 to-indigo-800 pt-20 pb-12 px-4 overflow-hidden font-['Poppins',sans-serif]">
-      {showDeleteModal && (
-  <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center px-4">
-    <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 animate-fadeIn space-y-4 text-center">
-      <h2 className="text-xl font-semibold text-gray-800">Delete this idea?</h2>
-      <p className="text-gray-600 text-sm">
-        This action is permanent and cannot be undone.
-      </p>
-      <div className="flex justify-center gap-4 pt-2">
-        <button
-          onClick={async () => {
-            try {
-              await appwriteService.deleteIdea(ideaToDelete);
-              setSavedIdeas(savedIdeas.filter((i) => i.$id !== ideaToDelete));
-              setShowDeleteModal(false);
-
-              const deleteNotification = document.getElementById('deleteNotification');
-              deleteNotification.classList.remove('hidden');
-              deleteNotification.classList.add('flex');
-              setTimeout(() => {
-                deleteNotification.classList.add('hidden');
-                deleteNotification.classList.remove('flex');
-              }, 3000);
-            } catch (err) {
-              setError("Failed to delete idea.");
-              console.error("Delete error:", err);
-              setShowDeleteModal(false);
+    const handleGenerate = async () => {
+        if (!isPremium && dailyCount >= 3) {
+            setError(
+                `You've used ${dailyCount}/3 free ideas today. Upgrade to premium!`
+            );
+            return;
+        }
+        setLoading(true);
+        setError("");
+        try {
+            const text = await generateIdea(branch, difficulty);
+            setIdea(text);
+            if (!isPremium) {
+                const today = new Date().toISOString().split("T")[0];
+                await appwriteService.updateLimit(
+                    userId,
+                    today,
+                    dailyCount + 1
+                );
+                setDailyCount(dailyCount + 1);
             }
-          }}
-          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl transition"
-        >
-          Yes, Delete
-        </button>
-        <button
-          onClick={() => setShowDeleteModal(false)}
-          className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-xl transition"
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+        } catch (err) {
+            setError("Failed to generate idea. Try again.");
+            console.error("Generate error:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-      {/* Animated background elements */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        {[...Array(8)].map((_, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0.7, scale: 1 }}
-            animate={{
-              opacity: [0.5, 0.8, 0.5],
-              scale: [1, 1.2, 1],
-              x: [0, Math.random() * 50 - 25, 0],
-              y: [0, Math.random() * 50 - 25, 0],
-            }}
-            transition={{
-              duration: Math.random() * 15 + 20,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-            style={{
-              position: "absolute",
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              width: `${Math.random() * 400 + 200}px`,
-              height: `${Math.random() * 400 + 200}px`,
-              borderRadius: "50%",
-              background: `radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%)`,
-              filter: "blur(50px)",
-              zIndex: 0,
-            }}
-          />
-        ))}
-      </div>
+    const handleSave = async () => {
+        if (!userId || !idea) return;
+        setSaveLoading(true);
+        setError("");
+        try {
+            const newIdea = {
+                userId,
+                branch,
+                difficulty,
+                ideaText: idea,
+                createdAt: new Date().toISOString(),
+            };
+            const saved = await appwriteService.saveProjectIdea(newIdea);
+            setSavedIdeas(
+                [{ ...newIdea, $id: saved.$id }, ...savedIdeas].slice(0, 10)
+            );
+            showNotification("notification", "Idea saved successfully!");
+        } catch (err) {
+            setError("Failed to save idea.");
+            console.error("Save error:", err);
+        } finally {
+            setSaveLoading(false);
+        }
+    };
 
-      {/* Confetti effect */}
-      {showConfetti && generateConfetti()}
+    const handleDelete = (ideaId) => {
+        setIdeaToDelete(ideaId);
+        setShowDeleteModal(true);
+    };
 
-      {/* Main content container */}
-      <div className="max-w-5xl mx-auto w-full relative z-10 mt-10">
-        {/* Header with premium badge */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          className="relative z-10 text-center mb-8"
-        >
-          <div className="relative inline-block">
-            <motion.h1
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-              className="text-4xl gap-2 sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-pink-200 tracking-tight flex items-center justify-center p-4"
-            >
-              <FaGraduationCap className="text-4xl sm:text-4xl text-blue-300 " /> 
-              Project Idea Generator
-            </motion.h1>
-            
-            {isPremium && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
-                animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                transition={{ delay: 0.6, duration: 0.5 }}
-                className="absolute -top-5 sm:-right-20 right-0 sm:rotate-6 rotate-0 text-xs bg-gradient-to-r from-yellow-400 to-amber-500 text-black text-xs font-bold px-3 py-1 rounded-lg transform rotate-6 shadow-lg flex items-center space-x-1 "
-              >
-                <div className="flex">{renderStars()}</div>
-                <span>PREMIUM</span>
-              </motion.div>
-            )}
-          </div>
-          
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="mt-4 text-lg text-blue-200 max-w-2xl mx-auto"
-          >
-            {isPremium
-              ? "Unlimited project ideas tailored for you. Get inspired anytime!"
-              : `${3 - dailyCount}/3 ideas remaining today. Upgrade for unlimited access!`}
-          </motion.p>
-          
-          {isPremium ? (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
-              className="mt-2 inline-flex items-center gap-1 px-3 py-1 bg-indigo-700/30 rounded-full backdrop-blur-sm text-sm font-medium text-indigo-200"
-            >
-              <FaStar className="text-yellow-400" />
-              <span>Premium Member</span>
-            </motion.div>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
-              className="mt-3"
-            >
-              <Link to="/premium" className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-black font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
-                <FaStar className="text-black" /> 
-                Upgrade to Premium
-              </Link>
-            </motion.div>
-          )}
-        </motion.div>
+    const confirmDelete = async () => {
+        try {
+            await appwriteService.deleteIdea(ideaToDelete);
+            setSavedIdeas(savedIdeas.filter((i) => i.$id !== ideaToDelete));
+            showNotification(
+                "deleteNotification",
+                "Idea deleted successfully!"
+            );
+        } catch (err) {
+            setError("Failed to delete idea.");
+            console.error("Delete error:", err);
+        } finally {
+            setShowDeleteModal(false);
+        }
+    };
 
-        {/* Tabs for navigation */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mb-6 bg-white/10 backdrop-blur-md rounded-2xl p-1 flex w-full max-w-md mx-auto"
-        >
-          <motion.button
-            whileHover={{ backgroundColor: activeTab === 'generator' ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)' }}
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setActiveTab('generator')}
-            className={`flex-1 py-3 px-4 rounded-xl text-sm font-medium flex items-center justify-center gap-2 transition-all ${
-              activeTab === 'generator' ? 'bg-white/20 text-white shadow-sm' : 'text-blue-200 hover:bg-white/5'
-            }`}
-          >
-            <FaLightbulb className={activeTab === 'generator' ? 'text-yellow-300' : 'text-blue-300'} />
-            Generate Ideas
-          </motion.button>
-          <motion.button
-            whileHover={{ backgroundColor: activeTab === 'saved' ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)' }}
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setActiveTab('saved')}
-            className={`flex-1 py-3 px-4 rounded-xl text-sm font-medium flex items-center justify-center gap-2 transition-all ${
-              activeTab === 'saved' ? 'bg-white/20 text-white shadow-sm' : 'text-blue-200 hover:bg-white/5'
-            }`}
-          >
-            <FaSave className={activeTab === 'saved' ? 'text-green-300' : 'text-blue-300'} />
-            Saved Ideas {savedIdeas.length > 0 && <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">{savedIdeas.length}</span>}
-          </motion.button>
-        </motion.div>
+    const handleCopy = (text) => {
+        navigator.clipboard.writeText(text);
+        showNotification("copyNotification", "Idea copied to clipboard!");
+    };
 
-        {/* Error Notification */}
-        <AnimatePresence>
-          {error && (
-            <motion.div
-              initial={{ opacity: 0, y: -10, height: 0 }}
-              animate={{ opacity: 1, y: 0, height: 'auto' }}
-              exit={{ opacity: 0, y: -10, height: 0 }}
-              className="mb-6 p-4 bg-red-900/60 border-l-4 border-red-400 backdrop-blur-sm rounded-md text-red-100 flex justify-between items-center"
-            >
-              <span>{error}</span>
-              {error.includes("premium") && (
-                <Link
-                  to="/premium"
-                  className="text-yellow-300 hover:text-yellow-200 hover:underline font-medium ml-4 whitespace-nowrap"
-                >
-                  Go Premium →
-                </Link>
-              )}
-              <button 
-                onClick={() => setError("")}
-                className="ml-4 text-red-300 hover:text-red-100"
-              >
-                ×
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
+    const handleExportPdf = (ideaText) => {
+        if (!isPremium) {
+            setError("Export is premium-only. Upgrade for ₹100/month!");
+            return;
+        }
+        const doc = new jsPDF();
+        doc.setFont("helvetica");
+        doc.setFontSize(14);
+        doc.text("Project Idea", 10, 20);
+        doc.setFontSize(12);
+        doc.text(doc.splitTextToSize(ideaText, 180), 10, 30);
+        doc.save("project-idea.pdf");
+        showNotification("exportNotification", "Idea exported successfully!");
+    };
 
-        {activeTab === 'generator' && (
-          <>
-            {/* Generator Form */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="bg-white/10 backdrop-blur-md p-8 rounded-2xl shadow-xl border border-white/20 mb-8"
-            >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-                <div>
-                  <label className="block text-sm font-medium text-blue-200 mb-2">
-                    Project Branch
-                  </label>
-                  <motion.div
-                    whileHover={{ scale: 1.01 }}
-                    className="relative"
-                  >
-                    <select
-                      value={branch}
-                      onChange={(e) => setBranch(e.target.value)}
-                      className="w-full p-4 bg-indigo-800/40 border border-indigo-600/50 text-white rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-transparent appearance-none transition-all duration-300 shadow-inner"
-                    >
-                      {branches.map((b) => (
-                        <option key={b} value={b} className="bg-indigo-900 text-white">
-                          {b}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-blue-300">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                      </svg>
-                    </div>
-                  </motion.div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-blue-200 mb-2">
-                    Project Difficulty
-                  </label>
-                  <motion.div
-                    whileHover={{ scale: 1.01 }}
-                    className="relative"
-                  >
-                    <select
-                      value={difficulty}
-                      onChange={(e) => setDifficulty(e.target.value)}
-                      className="w-full p-4 bg-indigo-800/40 border border-indigo-600/50 text-white rounded-xl focus:ring-2 focus:ring-blue-400 focus:border-transparent appearance-none transition-all duration-300 shadow-inner"
-                    >
-                      {difficulties.map((d) => (
-                        <option key={d} value={d} className="bg-indigo-900 text-white">
-                          {d}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-blue-300">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                      </svg>
-                    </div>
-                  </motion.div>
-                </div>
-              </div>
+    const showNotification = (id, message) => {
+        const notification = document.getElementById(id);
+        notification.classList.remove("hidden");
+        notification.classList.add("flex");
+        setTimeout(() => {
+            notification.classList.add("hidden");
+            notification.classList.remove("flex");
+        }, 2000);
+    };
 
-              <div className="text-center">
-                <motion.button
-                  whileHover={{ scale: 1.05, boxShadow: "0 5px 15px rgba(79, 70, 229, 0.4)" }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleGenerate}
-                  disabled={loading || !userId}
-                  className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-8 py-4 rounded-xl font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform shadow-lg hover:shadow-xl flex items-center justify-center mx-auto space-x-2"
-                >
-                  {loading ? (
-                    <>
-                      <div className="relative">
-                        <FaSpinner className="animate-spin text-white mr-2" />
-                        <div className="absolute inset-0 rounded-full border-t-2 border-blue-300 animate-ping opacity-20"></div>
-                      </div>
-                      <span>Generating your idea...</span>
-                    </>
-                  ) : (
-                    <>
-                      <FaLightbulb className="text-yellow-300 mr-2" />
-                      <span>Generate Project Idea</span>
-                    </>
-                  )}
-                </motion.button>
-                
-                {!isPremium && (
-                  <motion.div 
+    return (
+        <div className="min-h-screen flex flex-col bg-indigo-50 dark:bg-gray-900 pt-20 pb-8 px-4 font-['Poppins',sans-serif]">
+            {showDeleteModal && (
+                <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ delay: 0.8 }}
-                    className="mt-4 text-sm text-blue-300"
-                  >
-                    {dailyCount}/3 free generations used today
-                    <div className="w-full bg-indigo-800/50 h-2 rounded-full mt-2 overflow-hidden">
-                      <div 
-                        className="bg-gradient-to-r from-blue-400 to-indigo-500 h-full rounded-full"
-                        style={{ width: `${(dailyCount / 3) * 100}%` }}
-                      ></div>
-                    </div>
-                  </motion.div>
-                )}
-              </div>
-            </motion.div>
-
-            {/* Idea Display */}
-            <AnimatePresence>
-              {idea && (
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 30 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                  className="bg-white/10 backdrop-blur-md p-8 rounded-2xl shadow-xl border border-white/20 mb-8 relative overflow-hidden"
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="fixed inset-0 z-50 bg-black/40 dark:bg-black/60 flex items-center justify-center px-4"
                 >
-                  {/* Glowing corner accent */}
-                  <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-500/20 rounded-full blur-2xl"></div>
-                  <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-purple-500/20 rounded-full blur-2xl"></div>
-                  
-                  <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3 relative z-10">
-                    <span className="p-2 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg shadow-lg">
-                      <FaLightbulb className="text-yellow-300 text-xl" />
-                    </span>
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-200 to-pink-200">
-                      Your Project Idea
-                    </span>
-                  </h2>
-                  
-                  <div className="bg-indigo-900/30 border border-indigo-800/60 rounded-xl p-6 mb-6 relative z-10">
-                    <p className="text-blue-100 whitespace-pre-line leading-relaxed">{idea}</p>
-                  </div>
-                  
-                  <div className="flex flex-wrap gap-4 relative z-10">
-                    <motion.button
-                      whileHover={{ scale: 1.05, boxShadow: "0 5px 15px rgba(72, 187, 120, 0.4)" }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={handleSave}
-                      disabled={saveLoading || !idea || !userId}
-                      className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-4 py-3 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {saveLoading ? (
-                        <>
-                          <FaSpinner className="animate-spin mr-2" />
-                          <span>Saving...</span>
-                        </>
-                      ) : (
-                        <>
-                          <FaSave className="mr-2" />
-                          <span>Save Idea</span>
-                        </>
-                      )}
-                    </motion.button>
-                    
-                    <motion.button
-                      whileHover={{ scale: 1.05, boxShadow: "0 5px 15px rgba(66, 153, 225, 0.4)" }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => handleCopy(idea)}
-                      className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-3 rounded-lg hover:shadow-lg transition-all duration-300 flex items-center"
-                    >
-                      <FaCopy className="mr-2" />
-                      <span>Copy to Clipboard</span>
-                    </motion.button>
-                    
-                    <motion.button
-                      whileHover={{ scale: isPremium ? 1.05 : 1, boxShadow: isPremium ? "0 5px 15px rgba(159, 122, 234, 0.4)" : "none" }}
-                      whileTap={{ scale: isPremium ? 0.95 : 1 }}
-                      onClick={() => handleExportPdf(idea)}
-                      className={`px-4 py-3 rounded-lg flex items-center transition-all duration-300 ${
-                        isPremium
-                          ? "bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white hover:shadow-lg"
-                          : "bg-gray-700/60 text-gray-300 cursor-not-allowed"
-                      }`}
-                    >
-                      {isPremium ? (
-                        <>
-                          <FaFilePdf className="mr-2" />
-                          <span>Export as Text</span>
-                        </>
-                      ) : (
-                        <>
-                          <FaLock className="mr-2" />
-                          <span>Export (Premium Only)</span>
-                        </>
-                      )}
-                    </motion.button>
-                  </div>
+                    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg w-full max-w-sm p-6 space-y-4 text-center">
+                        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                            Delete this idea?
+                        </h2>
+                        <p className="text-gray-600 dark:text-gray-400 text-sm">
+                            This action cannot be undone.
+                        </p>
+                        <div className="flex justify-center gap-4">
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={confirmDelete}
+                                className="bg-red-600 dark:bg-red-500 hover:bg-red-700 dark:hover:bg-red-600 text-white px-4 py-2 rounded-lg"
+                            >
+                                Delete
+                            </motion.button>
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => setShowDeleteModal(false)}
+                                className="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg"
+                            >
+                                Cancel
+                            </motion.button>
+                        </div>
+                    </div>
                 </motion.div>
-              )}
-            </AnimatePresence>
-          </>
-        )}
+            )}
 
-        {/* Saved Ideas Tab Content */}
-        {activeTab === 'saved' && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bg-white/10 backdrop-blur-md p-8 rounded-2xl shadow-xl border border-white/20"
-          >
-            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-              <span className="p-2 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg shadow-lg">
-                <FaSave className="text-blue-300 text-xl" />
-              </span>
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-200 to-pink-200">
-                Your Saved Ideas
-              </span>
-            </h2>
-            
-            {savedIdeas.length === 0 ? (
-              <motion.div
+            <div className="max-w-3xl mx-auto w-full">
+                <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-center mb-6"
+                >
+                    <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 flex items-center justify-center gap-2">
+                        <FaGraduationCap className="text-blue-500" />
+                        Project Idea Generator
+                    </h1>
+                    <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                        {isPremium
+                            ? "Unlimited project ideas!"
+                            : `${3 - dailyCount}/3 ideas left today.`}
+                    </p>
+                    {!isPremium && (
+                        <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            <Link
+                                to="/premium"
+                                className="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-yellow-500 dark:bg-yellow-600 text-white dark:text-gray-100 rounded-lg"
+                            >
+                                <FaStar />
+                                Upgrade to Premium
+                            </Link>
+                        </motion.div>
+                    )}
+                </motion.div>
+
+                <div className="mb-4 bg-gray-200 dark:bg-gray-800 rounded-lg p-1 flex">
+                    <motion.button
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() => setActiveTab("generator")}
+                        className={`flex-1 py-2 px-3 text-sm transition-colors duration-200 ${
+                            activeTab === "generator"
+                                ? "bg-indigo-500 dark:bg-indigo-600 text-white dark:text-gray-100"
+                                : "text-gray-600 dark:text-gray-400"
+                        }`}
+                    >
+                        Generate
+                    </motion.button>
+                    <motion.button
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() => setActiveTab("saved")}
+                        className={`flex-1 py-2 px-3 text-sm transition-colors duration-200 ${
+                            activeTab === "saved"
+                                ? "bg-indigo-500 dark:bg-indigo-600 text-white dark:text-gray-100"
+                                : "text-gray-600 dark:text-gray-400"
+                        }`}
+                    >
+                        Saved ({savedIdeas.length})
+                    </motion.button>
+                </div>
+
+                {error && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="mb-4 p-3 bg-red-100 dark:bg-red-900 rounded-md text-red-800 dark:text-red-200 flex justify-between"
+                    >
+                        <span>{error}</span>
+                        <button
+                            onClick={() => setError("")}
+                            className="text-red-500 dark:text-red-400"
+                        >
+                            ×
+                        </button>
+                    </motion.div>
+                )}
+
+                {activeTab === "generator" && (
+                    <>
+                        <div className="bg-indigo-100 dark:bg-indigo-800 p-6 rounded-lg mb-6">
+                            <div className="grid grid-cols-1 gap-4">
+                                <div>
+                                    <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
+                                        Branch
+                                    </label>
+                                    <select
+                                        value={branch}
+                                        onChange={(e) =>
+                                            setBranch(e.target.value)
+                                        }
+                                        className="w-full p-3 bg-gray-300 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100 rounded-lg transition-colors duration-200"
+                                    >
+                                        {branches.map((b) => (
+                                            <option key={b} value={b}>
+                                                {b}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
+                                        Difficulty
+                                    </label>
+                                    <select
+                                        value={difficulty}
+                                        onChange={(e) =>
+                                            setDifficulty(e.target.value)
+                                        }
+                                        className="w-full p-3 bg-gray-300 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100 rounded-lg transition-colors duration-200"
+                                    >
+                                        {difficulties.map((d) => (
+                                            <option key={d} value={d}>
+                                                {d}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={handleGenerate}
+                                disabled={loading || !userId}
+                                className="mt-6 w-full bg-indigo-500 dark:bg-indigo-600 text-white dark:text-gray-100 p-3 rounded-lg disabled:opacity-50 flex items-center justify-center gap-2"
+                            >
+                                {loading ? (
+                                    <>
+                                        <FaSpinner className="animate-spin" />
+                                        Generating...
+                                    </>
+                                ) : (
+                                    <>
+                                        <FaLightbulb />
+                                        Generate Idea
+                                    </>
+                                )}
+                            </motion.button>
+                            {!isPremium && (
+                                <div className="mt-3 text-sm text-gray-600 dark:text-gray-400 text-center">
+                                    {dailyCount}/3 free generations
+                                </div>
+                            )}
+                        </div>
+
+                        {idea && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3 }}
+                                className="bg-indigo-100 dark:bg-indigo-800 p-6 rounded-lg mb-6"
+                            >
+                                <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+                                    <FaLightbulb className="text-yellow-300" />
+                                    Your Idea
+                                </h2>
+                                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                                    {idea}
+                                </p>
+                                <div className="flex flex-wrap gap-3">
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={handleSave}
+                                        disabled={
+                                            saveLoading || !idea || !userId
+                                        }
+                                        className="bg-indigo-500 dark:bg-indigo-600 text-white dark:text-gray-100 px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50"
+                                    >
+                                        {saveLoading ? (
+                                            <>
+                                                <FaSpinner className="animate-spin" />
+                                                Saving...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <FaSave />
+                                                Save
+                                            </>
+                                        )}
+                                    </motion.button>
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={() => handleCopy(idea)}
+                                        className="bg-indigo-500 dark:bg-indigo-600 text-white dark:text-gray-100 px-4 py-2 rounded-lg flex items-center gap-2"
+                                    >
+                                        <FaCopy />
+                                        Copy
+                                    </motion.button>
+                                    <motion.button
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={() => handleExportPdf(idea)}
+                                        className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
+                                            isPremium
+                                                ? "bg-indigo-500 dark:bg-indigo-600 text-white dark:text-gray-100"
+                                                : "bg-gray-700 dark:bg-gray-800 text-gray-300 dark:text-gray-400"
+                                        }`}
+                                    >
+                                        {isPremium ? (
+                                            <>
+                                                <FaFilePdf />
+                                                Export
+                                            </>
+                                        ) : (
+                                            <>
+                                                <FaLock />
+                                                Export (Premium)
+                                            </>
+                                        )}
+                                    </motion.button>
+                                </div>
+                            </motion.div>
+                        )}
+                    </>
+                )}
+
+                {activeTab === "saved" && (
+                    <div className="bg-indigo-100 dark:bg-indigo-800 p-6 rounded-lg">
+                        <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+                            <FaSave className="text-blue-500" />
+                            Saved Ideas
+                        </h2>
+                        {savedIdeas.length === 0 ? (
+                            <div className="text-center py-8 text-gray-600 dark:text-gray-400">
+                                <p className="mb-2">No saved ideas yet.</p>
+                                <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => setActiveTab("generator")}
+                                    className="bg-indigo-500 dark:bg-indigo-600 text-white dark:text-gray-100 px-4 py-2 rounded-lg"
+                                >
+                                    Generate Now
+                                </motion.button>
+                            </div>
+                        ) : (
+                            <ul className="space-y-4">
+                                {savedIdeas.map((i) => (
+                                    <motion.li
+                                        key={i.$id}
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="bg-gray-300 dark:bg-gray-700 p-4 rounded-lg"
+                                    >
+                                        <div className="flex flex-col gap-3">
+                                            <div className="flex gap-2">
+                                                <span className="px-2 py-1 bg-gray-400 dark:bg-gray-600 text-gray-600 dark:text-gray-400 rounded-full text-xs">
+                                                    {i.branch}
+                                                </span>
+                                                <span
+                                                    className={`px-2 py-1 rounded-full text-xs ${
+                                                        i.difficulty === "Easy"
+                                                            ? "bg-green-400 dark:bg-green-600 text-green-600 dark:text-green-400"
+                                                            : i.difficulty ===
+                                                              "Medium"
+                                                            ? "bg-yellow-400 dark:bg-yellow-600 text-yellow-600 dark:text-yellow-400"
+                                                            : "bg-red-400 dark:bg-red-600 text-red-600 dark:text-red-400"
+                                                    }`}
+                                                >
+                                                    {i.difficulty}
+                                                </span>
+                                            </div>
+                                            <p className="text-gray-600 dark:text-gray-400">
+                                                {i.ideaText}
+                                            </p>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                                Saved:{" "}
+                                                {new Date(
+                                                    i.createdAt
+                                                ).toLocaleString()}
+                                            </p>
+                                            <div className="flex gap-2">
+                                                <motion.button
+                                                    whileHover={{ scale: 1.1 }}
+                                                    whileTap={{ scale: 0.9 }}
+                                                    onClick={() =>
+                                                        handleCopy(i.ideaText)
+                                                    }
+                                                    className="p-2 bg-gray-400 dark:bg-gray-600 text-gray-600 dark:text-gray-400 rounded-lg"
+                                                >
+                                                    <FaCopy />
+                                                </motion.button>
+                                                <motion.button
+                                                    whileHover={{ scale: 1.1 }}
+                                                    whileTap={{ scale: 0.9 }}
+                                                    onClick={() =>
+                                                        handleExportPdf(
+                                                            i.ideaText
+                                                        )
+                                                    }
+                                                    className={`p-2 rounded-lg ${
+                                                        isPremium
+                                                            ? "bg-indigo-500 dark:bg-indigo-600 text-white dark:text-gray-100"
+                                                            : "bg-gray-700 dark:bg-gray-800 text-gray-400 dark:text-gray-500"
+                                                    }`}
+                                                >
+                                                    <FaFilePdf />
+                                                </motion.button>
+                                                <motion.button
+                                                    whileHover={{ scale: 1.1 }}
+                                                    whileTap={{ scale: 0.9 }}
+                                                    onClick={() =>
+                                                        handleDelete(i.$id)
+                                                    }
+                                                    className="p-2 bg-red-400 dark:bg-red-600 text-red-600 dark:text-red-400 rounded-lg"
+                                                >
+                                                    <FaTrash />
+                                                </motion.button>
+                                            </div>
+                                        </div>
+                                    </motion.li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+                )}
+            </div>
+
+            <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.6 }}
-                className="text-center py-10 text-blue-300"
-              >
-                <div className="mb-4 text-5xl opacity-50">📂</div>
-                <p className="text-lg mb-2">You don't have any saved ideas yet</p>
-                <p className="text-sm text-blue-400">Generate and save your first project idea!</p>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setActiveTab('generator')}
-                  className="mt-6 bg-blue-600/40 hover:bg-blue-600/60 text-white px-4 py-2 rounded-lg transition-all duration-300"
-                >
-                  Go to Generator
-                </motion.button>
-              </motion.div>
-            ) : (
-              <ul className="space-y-6">
-                {savedIdeas.map((i, index) => (
-                  <motion.li
-                    key={i.$id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 + index * 0.1 }}
-                    className="bg-indigo-900/30 border border-indigo-800/60 rounded-xl p-6 hover:bg-indigo-800/30 transition-all duration-300"
-                  >
-                    <div className="flex flex-col sm:flex-row justify-between gap-4">
-                      <div className="space-y-3 flex-1">
-                        <div className="flex flex-wrap gap-3"><span className="px-3 py-1 bg-blue-800/50 text-blue-200 rounded-full text-xs font-medium">
-                            {i.branch}
-                          </span>
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            i.difficulty === 'Easy' ? 'bg-green-800/50 text-green-200' :
-                            i.difficulty === 'Medium' ? 'bg-yellow-800/50 text-yellow-200' :
-                            'bg-red-800/50 text-red-200'
-                          }`}>
-                            {i.difficulty}
-                          </span>
-                        </div>
-                        
-                        <p className="text-blue-100 leading-relaxed">
-                          {i.ideaText}
-                        </p>
-                        
-                        <p className="text-sm text-blue-400">
-                          Saved: {new Date(i.createdAt).toLocaleString()}
-                        </p>
-                      </div>
-                      
-                      <div className="flex flex-row sm:flex-col gap-3 items-start">
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => handleCopy(i.ideaText)}
-                          className="p-2 bg-blue-800/40 hover:bg-blue-700/60 text-blue-300 rounded-lg transition-all duration-300 tooltip-container"
-                        >
-                          <FaCopy />
-                          <span className="tooltip-text">Copy</span>
-                        </motion.button>
-                        
-                        <motion.button
-                          whileHover={{ scale: isPremium ? 1.05 : 1 }}
-                          whileTap={{ scale: isPremium ? 0.95 : 1 }}
-                          onClick={() => handleExportPdf(i.ideaText)}
-                          className={`p-2 rounded-lg transition-all duration-300 tooltip-container ${
-                            isPremium
-                              ? "bg-purple-800/40 hover:bg-purple-700/60 text-purple-300"
-                              : "bg-gray-700/60 text-gray-400 cursor-not-allowed"
-                          }`}
-                        >
-                          <FaFilePdf />
-                          <span className="tooltip-text">{isPremium ? "Export" : "Premium Only"}</span>
-                        </motion.button>
-                        
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => handleDelete(i.$id)}
-                          className="p-2 bg-red-800/40 hover:bg-red-700/60 text-red-300 rounded-lg transition-all duration-300 tooltip-container"
-                        >
-                          <FaTrash />
-                          <span className="tooltip-text cursor-pointer">Delete</span>
-                        </motion.button>
-                      </div>
-                    </div>
-                  </motion.li>
-                ))}
-              </ul>
-            )}
-          </motion.div>
-        )}
-      </div>
-
-      {/* Toast Notifications */}
-      <div id="notification" className="fixed bottom-6 right-6 hidden items-center p-4 mb-4 bg-green-800/90 text-green-200 rounded-lg shadow-lg backdrop-blur-sm border border-green-700 transition-all duration-500 z-50">
-        <FaSave className="mr-3 text-green-300" />
-        <span>Idea saved successfully!</span>
-      </div>
-      
-      <div id="deleteNotification" className="fixed bottom-6 right-6 hidden items-center p-4 mb-4 bg-red-800/90 text-red-200 rounded-lg shadow-lg backdrop-blur-sm border border-red-700 transition-all duration-500 z-50">
-        <FaTrash className="mr-3 text-red-300" />
-        <span>Idea deleted successfully!</span>
-      </div>
-      
-      <div id="copyNotification" className="fixed bottom-6 right-6 hidden items-center p-4 mb-4 bg-blue-800/90 text-blue-200 rounded-lg shadow-lg backdrop-blur-sm border border-blue-700 transition-all duration-500 z-50">
-        <FaCopy className="mr-3 text-blue-300" />
-        <span>Idea copied to clipboard!</span>
-      </div>
-      
-      <div id="exportNotification" className="fixed bottom-6 right-6 hidden items-center p-4 mb-4 bg-purple-800/90 text-purple-200 rounded-lg shadow-lg backdrop-blur-sm border border-purple-700 transition-all duration-500 z-50">
-        <FaFilePdf className="mr-3 text-purple-300" />
-        <span>Idea exported successfully!</span>
-      </div>
-
-      {/* CSS for tooltips - add to your global CSS or as inline styles */}
-      <style>{`
-        .tooltip-container {
-          position: relative;
-        }
-        
-        .tooltip-text {
-          visibility: hidden;
-          position: absolute;
-          z-index: 100;
-          background-color: rgba(17, 24, 39, 0.9);
-          color: white;
-          text-align: center;
-          padding: 4px 8px;
-          border-radius: 6px;
-          top: -30px;
-          left: 50%;
-          transform: translateX(-50%);
-          white-space: nowrap;
-          font-size: 12px;
-          opacity: 0;
-          transition: opacity 0.3s;
-        }
-        
-        .tooltip-container:hover .tooltip-text {
-          visibility: visible;
-          opacity: 1;
-        }
-        
-        @keyframes float {
-          0% { transform: translateY(0px) translateX(0px) rotate(0deg); }
-          50% { transform: translateY(-20px) translateX(10px) rotate(10deg); }
-          100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
-        }
-        
-        .blob {
-          animation-delay: var(--delay, 0s);
-        }
-      `}</style>
-    </div>
-  );
-};
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                id="notification"
+                className="fixed bottom-4 right-4 hidden items-center p-3 bg-green-400 dark:bg-green-600 text-green-600 dark:text-green-400 rounded-lg"
+            >
+                <FaSave className="mr-2" />
+                <span>Idea saved!</span>
+            </motion.div>
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                id="deleteNotification"
+                className="fixed bottom-4 right-4 hidden items-center p-3 bg-red-400 dark:bg-red-600 text-red-600 dark:text-red-400 rounded-lg"
+            >
+                <FaTrash className="mr-2" />
+                <span>Idea deleted!</span>
+            </motion.div>
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                id="copyNotification"
+                className="fixed bottom-4 right-4 hidden items-center p-3 bg-gray-400 dark:bg-gray-600 text-gray-600 dark:text-gray-400 rounded-lg"
+            >
+                <FaCopy className="mr-2" />
+                <span>Copied!</span>
+            </motion.div>
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                id="exportNotification"
+                className="fixed bottom-4 right-4 hidden items-center p-3 bg-indigo-500 dark:bg-indigo-600 text-white dark:text-gray-100 rounded-lg"
+            >
+                <FaFilePdf className="mr-2" />
+                <span>Exported!</span>
+            </motion.div>
+        </div>
+    );
+});
 
 export default ProjectGenerator;

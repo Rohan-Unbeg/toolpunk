@@ -4,13 +4,13 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
     return (
-        <footer className="bg-gradient-to-r from-indigo-950 via-purple-900 to-indigo-900 text-white py-8 border-t border-white/10">
+        <footer className="bg-indigo-900 dark:bg-gray-800 text-white dark:text-gray-100 py-8 border-t border-blue-300 dark:border-blue-500">
             <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                     <h3 className="text-xl font-bold mb-2 tracking-tight">
                         🧰 Toolpunk
                     </h3>
-                    <p className="text-sm text-white/80">
+                    <p className="text-sm text-gray-300 dark:text-gray-400">
                         Smart tools for students and solopreneurs. Powered by
                         AI, built with love.
                     </p>
@@ -18,24 +18,36 @@ const Footer = () => {
 
                 <div>
                     <h4 className="font-semibold mb-2">Legal</h4>
-                    <ul className="space-y-1 text-sm text-white/80">
+                    <ul className="space-y-1 text-sm text-gray-300 dark:text-gray-400">
                         <li>
-                            <Link to="/terms" className="hover:text-white">
+                            <Link
+                                to="/terms"
+                                className="hover:text-gray-100 dark:hover:text-gray-200"
+                            >
                                 Terms & Conditions
                             </Link>
                         </li>
                         <li>
-                            <Link to="/privacy" className="hover:text-white">
+                            <Link
+                                to="/privacy"
+                                className="hover:text-gray-100 dark:hover:text-gray-200"
+                            >
                                 Privacy Policy
                             </Link>
                         </li>
                         <li>
-                            <Link to="/refunds" className="hover:text-white">
+                            <Link
+                                to="/refunds"
+                                className="hover:text-gray-100 dark:hover:text-gray-200"
+                            >
                                 Refund Policy
                             </Link>
                         </li>
                         <li>
-                            <Link to="/shipping" className="hover:text-white">
+                            <Link
+                                to="/shipping"
+                                className="hover:text-gray-100 dark:hover:text-gray-200"
+                            >
                                 Shipping Policy
                             </Link>
                         </li>
@@ -44,27 +56,35 @@ const Footer = () => {
 
                 <div>
                     <h4 className="font-semibold mb-2">More</h4>
-                    <ul className="space-y-1 text-sm text-white/80">
+                    <ul className="space-y-1 text-sm text-gray-300 dark:text-gray-400">
                         <li>
                             <Link
                                 to="/projectgenerator"
-                                className="hover:text-white"
+                                className="hover:text-gray-100 dark:hover:text-gray-200"
                             >
                                 Project Generator
                             </Link>
                         </li>
                         <li>
-                            <Link to="/premium" className="hover:text-white">
+                            <Link
+                                to="/premium"
+                                className="hover:text-gray-100 dark:hover:text-gray-200"
+                            >
                                 Go Premium
                             </Link>
                         </li>
                         <li>
-                            <Link to="/contact">Contact</Link>
+                            <Link
+                                to="/contact"
+                                className="hover:text-gray-100 dark:hover:text-gray-200"
+                            >
+                                Contact
+                            </Link>
                         </li>
                         <li>
                             <a
                                 href="mailto:rohanunbeg0918@gmail.com"
-                                className="hover:text-white"
+                                className="hover:text-gray-100 dark:hover:text-gray-200"
                             >
                                 Contact Support
                             </a>
@@ -73,7 +93,7 @@ const Footer = () => {
                 </div>
             </div>
 
-            <div className="mt-8 text-center text-xs text-white/60">
+            <div className="mt-8 text-center text-xs text-gray-400 dark:text-gray-500">
                 © {new Date().getFullYear()} Toolpunk — Built in 🇮🇳 with 💻 + ☕
             </div>
         </footer>

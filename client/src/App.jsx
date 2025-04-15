@@ -20,44 +20,54 @@ import Contact from "./pages/Contact";
 import VerifyPending from "./pages/VerifyPending";
 import VerifyEmail from "./pages/VerifyEmail";
 import CheckEmail from "./pages/CheckEmail";
+import Profile from "./pages/Profile";
+import GoogleCallback from "./pages/GoogleCallback";
+import { ThemeProvider } from "./context/ThemeContext";
 
 function App() {
     return (
-        <AuthProvider>
-            <Navbar />
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<SignUp />} />
-                <Route path="/verify-email" element={<VerifyEmail />} />
-                <Route path="/verify-pending" element={<VerifyPending />} />
-                <Route path="/signup" element={<SignUp />} />
-                <Route
-                    path="/projectgenerator"
-                    element={
-                        <PrivateRoute>
-                            <ProjectGenerator />
-                        </PrivateRoute>
-                    }
-                />
-                <Route
-                    path="/premium"
-                    element={
-                        <PrivateRoute>
-                            <Premium />
-                        </PrivateRoute>
-                    }
-                />
-                <Route path="*" element={<NotFound />} />
-                <Route path="/terms" element={<TermsAndConditions />} />
-                <Route path="/privacy" element={<PrivacyPolicy />} />
-                <Route path="/refunds" element={<RefundPolicy />} />
-                <Route path="/shipping" element={<ShippingPolicy />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/check-email" element={<CheckEmail />} />
-            </Routes>
-            <Footer />
-        </AuthProvider>
+        <ThemeProvider>
+            <AuthProvider>
+                <Navbar />
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<SignUp />} />
+                    <Route
+                        path="/google-callback"
+                        element={<GoogleCallback />}
+                    />
+
+                    <Route path="/verify-email" element={<VerifyEmail />} />
+                    <Route path="/verify-pending" element={<VerifyPending />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route
+                        path="/projectgenerator"
+                        element={
+                            <PrivateRoute>
+                                <ProjectGenerator />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/premium"
+                        element={
+                            <PrivateRoute>
+                                <Premium />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route path="*" element={<NotFound />} />
+                    <Route path="/terms" element={<TermsAndConditions />} />
+                    <Route path="/privacy" element={<PrivacyPolicy />} />
+                    <Route path="/refunds" element={<RefundPolicy />} />
+                    <Route path="/shipping" element={<ShippingPolicy />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/check-email" element={<CheckEmail />} />
+                </Routes>
+                <Footer />
+            </AuthProvider>
+        </ThemeProvider>
     );
 }
 

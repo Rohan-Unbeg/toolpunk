@@ -1,4 +1,5 @@
-import { Client, Account, Databases, ID, Query } from "appwrite";
+import { Client, Account, Databases, ID, Query, Storage } from "appwrite";
+// Removed CryptoJS import - no longer needed
 
 const client = new Client()
     .setEndpoint(import.meta.env.VITE_APPWRITE_ENDPOINT)
@@ -6,6 +7,7 @@ const client = new Client()
 
 const account = new Account(client);
 const databases = new Databases(client);
+const storage = new Storage(client);
 
 const DB_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID;
 const PROJECTS_COLLECTION_ID = import.meta.env.VITE_PROJECT_COLLECTION_ID;
@@ -14,21 +16,15 @@ const LIMITS_COLLECTION_ID = import.meta.env.VITE_LIMITS_COLLECTION_ID;
 const appwriteService = {
     async register(email, password, name) {
         try {
-            // Create user
             await account.create(ID.unique(), email, password, name);
-
-            // Create session to send verification
             await account.createEmailPasswordSession(email, password);
-
-            // Send verification email
             await account.createVerification(
                 `${window.location.origin}/verify-email`
             );
-
-            // Immediately log out to force fresh login after verification
-            await account.deleteSession("current");
+            await account.deleteSession("current"); // Log out after sending verification
         } catch (error) {
-            throw error;
+            console.error("Registration Error:", error);
+            throw error; // Re-throw for handling in UI
         }
     },
 
@@ -36,19 +32,31 @@ const appwriteService = {
         return account.createEmailPasswordSession(email, password);
     },
 
-    loginWithGoogle() {
-        // Redirects to Appwrite Google OAuth flow
+    loginWithGoogle(
+        // Success URL might need adjustment if it relied on profile pic sync
+        successUrl = `${window.location.origin}/projectgenerator`,
+        failureUrl = `${window.location.origin}/login`
+    ) {
         return account.createOAuth2Session(
             "google",
-            `${window.location.origin}/projectgenerator`,
-            `${window.location.origin}/login`
+            // Callback URL likely stays the same
+            `${window.location.origin}/google-callback`,
+            failureUrl,
+            // Scopes are still needed for name/email even without picture syncing
+            ["profile", "email", "openid"]
         );
     },
 
+    // Removed the updatePrefsIfGoogle function entirely
+
     async getCurrentUser() {
         try {
-            return await account.get();
-        } catch {
+            // Directly return the user fetched from Appwrite
+            const user = await account.get();
+            return user;
+        } catch (error) {
+            // It's better practice to log the error or handle it more gracefully
+            // console.error("Failed to get current user:", error);
             return null;
         }
     },
@@ -57,7 +65,39 @@ const appwriteService = {
         return account.deleteSession("current");
     },
 
-    saveProjectIdea({ userId, branch, difficulty, ideaText }) {
+    async updateProfile({ name, picture, bio, setUser }) {
+        try {
+            if (name) await account.updateName(name);
+            const prefs = { picture: picture || "", bio: bio || "" };
+            await account.updatePrefs(prefs);
+            const updatedUser = await account.get();
+            setUser(updatedUser);
+            return updatedUser;
+        } catch (error) {
+            console.error("Error updating profile:", error);
+            throw error;
+        }
+    },
+
+    async uploadFile(file) {
+        try {
+            const response = await storage.createFile(
+                BUCKET_ID,
+                ID.unique(),
+                file
+            );
+            return response.$id;
+        } catch (error) {
+            console.error("Upload error:", error);
+            throw error;
+        }
+    },
+    
+    getFilePreview(fileId) {
+        return storage.getFilePreview(BUCKET_ID, fileId).href;
+    },
+
+    async saveProjectIdea({ userId, branch, difficulty, ideaText }) {
         return databases.createDocument(
             DB_ID,
             PROJECTS_COLLECTION_ID,
@@ -67,9 +107,24 @@ const appwriteService = {
                 branch,
                 difficulty,
                 ideaText,
+                favorite: false, // Added default favorite field
                 createdAt: new Date().toISOString(),
             }
         );
+    },
+
+    async toggleFavorite(ideaId, favorite) {
+        try {
+            await databases.updateDocument(
+                DB_ID,
+                PROJECTS_COLLECTION_ID,
+                ideaId,
+                { favorite }
+            );
+        } catch (error) {
+            console.error("Failed to toggle favorite:", error);
+            throw error;
+        }
     },
 
     async getUserIdeas(userId) {
@@ -80,8 +135,9 @@ const appwriteService = {
                 [Query.equal("userId", userId), Query.orderDesc("createdAt")]
             );
             return res.documents;
-        } catch {
-            return [];
+        } catch (error) {
+            console.error("Failed to get user ideas:", error);
+            return []; // Return empty array on failure
         }
     },
 
@@ -96,9 +152,12 @@ const appwriteService = {
                 LIMITS_COLLECTION_ID,
                 [Query.equal("userId", userId), Query.equal("date", date)]
             );
-            return res.documents[0] || { count: 0 };
-        } catch {
-            return { count: 0 };
+            // Return a default structure if no document found
+            return res.documents[0] || { userId, date, count: 0 };
+        } catch (error) {
+            console.error("Failed to get limit:", error);
+            // Return a default structure on error
+            return { userId, date, count: 0 };
         }
     },
 
@@ -115,9 +174,14 @@ const appwriteService = {
             DB_ID,
             LIMITS_COLLECTION_ID,
             ID.unique(),
-            { userId, date, count }
+            {
+                userId,
+                date,
+                count,
+            }
         );
     },
 };
 
+export { client, account };
 export default appwriteService;

@@ -1,4 +1,3 @@
-// /client/src/pages/Home.jsx
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -25,8 +24,8 @@ const Home = () => {
     }, []);
 
     return (
-        <div className="min-h-screen flex flex-col bg-gradient-to-b from-indigo-50 via-purple-50 to-blue-50 pt-20 pb-8 px-4 overflow-hidden">
-            <div className="absolute inset-0 bg-grid-indigo opacity-5 z-0"></div>
+        <div className="min-h-screen flex flex-col bg-gradient-to-b from-indigo-50 via-purple-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-black pt-20 pb-8 px-4 overflow-hidden">
+            <div className="absolute inset-0 bg-grid-indigo dark:bg-grid-gray-700 opacity-5 z-0"></div>
             <div className="absolute inset-0 z-0 overflow-hidden">
                 {[...Array(6)].map((_, i) => (
                     <div
@@ -44,6 +43,12 @@ const Home = () => {
                                 Math.random() * 50 + 90
                             )}, ${Math.floor(
                                 Math.random() * 155 + 100
+                            )}, 0.15), transparent) dark:radial-gradient(circle, rgba(${Math.floor(
+                                Math.random() * 50 + 100
+                            )}, ${Math.floor(
+                                Math.random() * 50 + 100
+                            )}, ${Math.floor(
+                                Math.random() * 50 + 100
                             )}, 0.15), transparent)`,
                             borderRadius: "50%",
                             filter: "blur(60px)",
@@ -67,7 +72,7 @@ const Home = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.2 }}
-                        className="text-4xl sm:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 tracking-tight"
+                        className="text-4xl sm:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 tracking-tight"
                     >
                         Welcome to Toolpunk
                     </motion.h1>
@@ -75,7 +80,7 @@ const Home = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.3 }}
-                        className="mt-4 text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto"
+                        className="mt-4 text-lg sm:text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto"
                     >
                         Free tools for students: project ideas, railway PNR
                         checks, and more!
@@ -94,18 +99,18 @@ const Home = () => {
                             scale: 1.02,
                             boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
                         }}
-                        className="bg-white p-6 rounded-2xl shadow-sm ring-1 ring-indigo-100/50"
+                        className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm ring-1 ring-indigo-100/50 dark:ring-gray-700/50"
                     >
-                        <h2 className="text-xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2 flex items-center gap-2">
                             <span className="text-2xl">🎓</span> Project Ideas
                         </h2>
-                        <p className="text-gray-600 mb-4">
+                        <p className="text-gray-700 dark:text-gray-400 mb-4">
                             Get 3 free project ideas daily or go premium for
                             unlimited.
                         </p>
                         <Link
                             to="/projectgenerator"
-                            className="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition"
+                            className="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-500 dark:to-purple-500 text-white dark:text-gray-100 px-4 py-2 rounded-lg hover:from-indigo-700 hover:to-purple-700 dark:hover:from-indigo-600 dark:hover:to-purple-600 transition"
                         >
                             Try Now
                         </Link>
@@ -115,17 +120,17 @@ const Home = () => {
                             scale: 1.02,
                             boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
                         }}
-                        className="bg-white p-6 rounded-2xl shadow-sm opacity-75"
+                        className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm opacity-75"
                     >
-                        <h2 className="text-xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2 flex items-center gap-2">
                             <span className="text-2xl">🚂</span> PNR Checker
                         </h2>
-                        <p className="text-gray-600 mb-4">
+                        <p className="text-gray-700 dark:text-gray-400 mb-4">
                             Check railway PNR status (coming soon).
                         </p>
                         <button
                             disabled
-                            className="bg-gray-300 text-gray-600 px-4 py-2 rounded-lg cursor-not-allowed"
+                            className="bg-gray-300 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-4 py-2 rounded-lg cursor-not-allowed"
                         >
                             Coming Soon
                         </button>
@@ -140,15 +145,15 @@ const Home = () => {
                         transition={{ delay: 0.6 }}
                         className="mt-12 text-center"
                     >
-                        <h2 className="text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 mb-4">
+                        <h2 className="text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 mb-4">
                             Unlock More with Premium
                         </h2>
-                        <p className="text-gray-600 mb-6 max-w-xl mx-auto">
+                        <p className="text-gray-700 dark:text-gray-400 mb-6 max-w-xl mx-auto">
                             Get unlimited project ideas for just ₹100/month.
                         </p>
                         <Link
                             to="/premium"
-                            className="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition shadow-md hover:shadow-lg"
+                            className="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-500 dark:to-purple-500 text-white dark:text-gray-100 px-6 py-3 rounded-lg hover:from-indigo-700 hover:to-purple-700 dark:hover:from-indigo-600 dark:hover:to-purple-600 transition shadow-md hover:shadow-lg"
                         >
                             Go Premium
                         </Link>
