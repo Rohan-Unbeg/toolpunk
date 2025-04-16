@@ -9,14 +9,14 @@ export default function VerifyPending() {
     };
 
     return (
-        <div className="text-center mt-20 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+        <div className="text-center mt-20 bg-light dark:bg-dark text-dark dark:text-light">
             <h2 className="text-2xl font-semibold mb-4">Verify Your Email</h2>
             <p className="mb-6">
                 Check your inbox and click the link to verify your email.
             </p>
             <button
                 onClick={resend}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition dark:bg-blue-500 dark:hover:bg-blue-600"
+                className="bg-primary text-white px-4 py-2 rounded hover:bg-secondary transition"
             >
                 Resend Verification Email
             </button>

@@ -113,13 +113,13 @@ const Profile = () => {
                 )}&background=4F46E5&color=fff`
             }
             alt="Profile"
-            className="h-20 w-20 rounded-full object-cover border-2 border-white dark:border-gray-800 shadow"
+            className="h-20 w-20 rounded-full object-cover border-2 border-white dark:border-neutral-800 shadow"
         />
     );
 
     if (isLoading || !user) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+            <div className="min-h-screen flex items-center justify-center bg-neutral-50 dark:bg-neutral-900">
                 <div className="h-8 w-8 border-4 border-indigo-500 dark:border-indigo-400 border-t-transparent rounded-full animate-spin" />
             </div>
         );

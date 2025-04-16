@@ -3,11 +3,11 @@ import React from "react";
 import { Card, CardContent } from "../components/Card";
 
 const PolicyPage = ({ title, children }) => (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-28 pb-16 bg-white dark:bg-gray-900">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-28 pb-16 bg-neutral-50 dark:bg-neutral-900">
         <Card>
-            <CardContent className="p-6 sm:p-8 md:p-10 bg-gray-100 dark:bg-gray-800">
-                <div className="space-y-6 text-gray-800 dark:text-gray-300">
-                    <h1 className="text-3xl font-semibold tracking-tight text-gray-900 dark:text-gray-100 border-b pb-4">
+            <CardContent className="p-6 sm:p-8 md:p-10 bg-neutral-100 dark:bg-neutral-800">
+                <div className="space-y-6 text-neutral-800 dark:text-neutral-300">
+                    <h1 className="text-3xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100 border-b pb-4">
                         {title}
                     </h1>
                     <div className="prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none dark:prose-dark">

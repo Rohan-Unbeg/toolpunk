@@ -49,14 +49,14 @@ export default function VerifyEmail() {
     }, [navigate]);
 
     return (
-        <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-light-50 via-light-100 to-light-200 dark:bg-gradient-to-b dark:from-dark-700 dark:via-dark-800 dark:to-dark-900">
+        <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-neutral-50 via-neutral-100 to-neutral-200 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-900">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
                 className="max-w-md w-full text-center"
             >
-                <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+                <h1 className="text-2xl font-bold text-neutral-800 dark:text-neutral-200">
                     {status}
                 </h1>
             </motion.div>

@@ -173,7 +173,7 @@ const ProjectGenerator = React.memo(() => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-indigo-50 dark:bg-gray-900 pt-20 pb-8 px-4 font-['Poppins',sans-serif]">
+        <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 pt-20 pb-8 px-4 transition-colors duration-200">
             {showDeleteModal && (
                 <motion.div
                     initial={{ opacity: 0 }}
@@ -182,11 +182,11 @@ const ProjectGenerator = React.memo(() => {
                     transition={{ duration: 0.2 }}
                     className="fixed inset-0 z-50 bg-black/40 dark:bg-black/60 flex items-center justify-center px-4"
                 >
-                    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg w-full max-w-sm p-6 space-y-4 text-center">
-                        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                    <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-lg p-8">
+                        <h2 className="text-neutral-900 dark:text-neutral-100 font-semibold">
                             Delete this idea?
                         </h2>
-                        <p className="text-gray-600 dark:text-gray-400 text-sm">
+                        <p className="text-neutral-600 dark:text-neutral-400 text-sm">
                             This action cannot be undone.
                         </p>
                         <div className="flex justify-center gap-4">
@@ -194,7 +194,7 @@ const ProjectGenerator = React.memo(() => {
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={confirmDelete}
-                                className="bg-red-600 dark:bg-red-500 hover:bg-red-700 dark:hover:bg-red-600 text-white px-4 py-2 rounded-lg"
+                                className="bg-error text-white px-3 py-1 rounded-lg text-xs ml-2"
                             >
                                 Delete
                             </motion.button>
@@ -202,7 +202,7 @@ const ProjectGenerator = React.memo(() => {
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={() => setShowDeleteModal(false)}
-                                className="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg"
+                                className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 mt-6"
                             >
                                 Cancel
                             </motion.button>
@@ -218,11 +218,11 @@ const ProjectGenerator = React.memo(() => {
                     transition={{ duration: 0.3 }}
                     className="text-center mb-6"
                 >
-                    <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 flex items-center justify-center gap-2">
+                    <h1 className="text-2xl font-bold text-primary mb-2 flex items-center gap-2">
                         <FaGraduationCap className="text-blue-500" />
                         Project Idea Generator
                     </h1>
-                    <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-neutral-700 dark:text-neutral-300 mb-4">
                         {isPremium
                             ? "Unlimited project ideas!"
                             : `${3 - dailyCount}/3 ideas left today.`}
@@ -234,7 +234,7 @@ const ProjectGenerator = React.memo(() => {
                         >
                             <Link
                                 to="/premium"
-                                className="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-yellow-500 dark:bg-yellow-600 text-white dark:text-gray-100 rounded-lg"
+                                className="bg-gradient-to-r from-primary to-secondary text-white px-4 py-2 rounded-lg hover:from-secondary hover:to-primary transition"
                             >
                                 <FaStar />
                                 Upgrade to Premium
@@ -243,15 +243,15 @@ const ProjectGenerator = React.memo(() => {
                     )}
                 </motion.div>
 
-                <div className="mb-4 bg-gray-200 dark:bg-gray-800 rounded-lg p-1 flex">
+                <div className="mb-4 bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 mt-6">
                     <motion.button
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.97 }}
                         onClick={() => setActiveTab("generator")}
                         className={`flex-1 py-2 px-3 text-sm transition-colors duration-200 ${
                             activeTab === "generator"
-                                ? "bg-indigo-500 dark:bg-indigo-600 text-white dark:text-gray-100"
-                                : "text-gray-600 dark:text-gray-400"
+                                ? "bg-primary text-white"
+                                : "text-neutral-600 dark:text-neutral-400"
                         }`}
                     >
                         Generate
@@ -262,8 +262,8 @@ const ProjectGenerator = React.memo(() => {
                         onClick={() => setActiveTab("saved")}
                         className={`flex-1 py-2 px-3 text-sm transition-colors duration-200 ${
                             activeTab === "saved"
-                                ? "bg-indigo-500 dark:bg-indigo-600 text-white dark:text-gray-100"
-                                : "text-gray-600 dark:text-gray-400"
+                                ? "bg-primary text-white"
+                                : "text-neutral-600 dark:text-neutral-400"
                         }`}
                     >
                         Saved ({savedIdeas.length})
@@ -276,12 +276,12 @@ const ProjectGenerator = React.memo(() => {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
-                        className="mb-4 p-3 bg-red-100 dark:bg-red-900 rounded-md text-red-800 dark:text-red-200 flex justify-between"
+                        className="mb-4 p-3 bg-error text-white rounded-md flex justify-between"
                     >
                         <span>{error}</span>
                         <button
                             onClick={() => setError("")}
-                            className="text-red-500 dark:text-red-400"
+                            className="text-white"
                         >
                             ×
                         </button>
@@ -290,10 +290,10 @@ const ProjectGenerator = React.memo(() => {
 
                 {activeTab === "generator" && (
                     <>
-                        <div className="bg-indigo-100 dark:bg-indigo-800 p-6 rounded-lg mb-6">
+                        <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 mt-6">
                             <div className="grid grid-cols-1 gap-4">
                                 <div>
-                                    <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
+                                    <label className="block text-sm text-neutral-600 dark:text-neutral-400 mb-1">
                                         Branch
                                     </label>
                                     <select
@@ -301,7 +301,7 @@ const ProjectGenerator = React.memo(() => {
                                         onChange={(e) =>
                                             setBranch(e.target.value)
                                         }
-                                        className="w-full p-3 bg-gray-300 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100 rounded-lg transition-colors duration-200"
+                                        className="w-full p-3 bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 text-neutral-900 dark:text-neutral-100 rounded-lg transition-colors duration-200"
                                     >
                                         {branches.map((b) => (
                                             <option key={b} value={b}>
@@ -311,7 +311,7 @@ const ProjectGenerator = React.memo(() => {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
+                                    <label className="block text-sm text-neutral-600 dark:text-neutral-400 mb-1">
                                         Difficulty
                                     </label>
                                     <select
@@ -319,7 +319,7 @@ const ProjectGenerator = React.memo(() => {
                                         onChange={(e) =>
                                             setDifficulty(e.target.value)
                                         }
-                                        className="w-full p-3 bg-gray-300 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-100 rounded-lg transition-colors duration-200"
+                                        className="w-full p-3 bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 text-neutral-900 dark:text-neutral-100 rounded-lg transition-colors duration-200"
                                     >
                                         {difficulties.map((d) => (
                                             <option key={d} value={d}>
@@ -334,7 +334,7 @@ const ProjectGenerator = React.memo(() => {
                                 whileTap={{ scale: 0.95 }}
                                 onClick={handleGenerate}
                                 disabled={loading || !userId}
-                                className="mt-6 w-full bg-indigo-500 dark:bg-indigo-600 text-white dark:text-gray-100 p-3 rounded-lg disabled:opacity-50 flex items-center justify-center gap-2"
+                                className="mt-6 w-full bg-primary text-white p-3 rounded-lg disabled:opacity-50 flex items-center justify-center gap-2"
                             >
                                 {loading ? (
                                     <>
@@ -349,7 +349,7 @@ const ProjectGenerator = React.memo(() => {
                                 )}
                             </motion.button>
                             {!isPremium && (
-                                <div className="mt-3 text-sm text-gray-600 dark:text-gray-400 text-center">
+                                <div className="mt-3 text-sm text-neutral-600 dark:text-neutral-400 text-center">
                                     {dailyCount}/3 free generations
                                 </div>
                             )}
@@ -360,13 +360,13 @@ const ProjectGenerator = React.memo(() => {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.3 }}
-                                className="bg-indigo-100 dark:bg-indigo-800 p-6 rounded-lg mb-6"
+                                className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 mt-6"
                             >
-                                <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+                                <h2 className="text-xl font-bold text-primary mb-4 flex items-center gap-2">
                                     <FaLightbulb className="text-yellow-300" />
                                     Your Idea
                                 </h2>
-                                <p className="text-gray-600 dark:text-gray-400 mb-4">
+                                <p className="text-neutral-600 dark:text-neutral-400 mb-4">
                                     {idea}
                                 </p>
                                 <div className="flex flex-wrap gap-3">
@@ -377,7 +377,7 @@ const ProjectGenerator = React.memo(() => {
                                         disabled={
                                             saveLoading || !idea || !userId
                                         }
-                                        className="bg-indigo-500 dark:bg-indigo-600 text-white dark:text-gray-100 px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50"
+                                        className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50"
                                     >
                                         {saveLoading ? (
                                             <>
@@ -395,7 +395,7 @@ const ProjectGenerator = React.memo(() => {
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
                                         onClick={() => handleCopy(idea)}
-                                        className="bg-indigo-500 dark:bg-indigo-600 text-white dark:text-gray-100 px-4 py-2 rounded-lg flex items-center gap-2"
+                                        className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2"
                                     >
                                         <FaCopy />
                                         Copy
@@ -406,8 +406,8 @@ const ProjectGenerator = React.memo(() => {
                                         onClick={() => handleExportPdf(idea)}
                                         className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
                                             isPremium
-                                                ? "bg-indigo-500 dark:bg-indigo-600 text-white dark:text-gray-100"
-                                                : "bg-gray-700 dark:bg-gray-800 text-gray-300 dark:text-gray-400"
+                                                ? "bg-primary text-white"
+                                                : "bg-neutral-800 text-neutral-400"
                                         }`}
                                     >
                                         {isPremium ? (
@@ -429,19 +429,19 @@ const ProjectGenerator = React.memo(() => {
                 )}
 
                 {activeTab === "saved" && (
-                    <div className="bg-indigo-100 dark:bg-indigo-800 p-6 rounded-lg">
-                        <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+                    <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 mt-6">
+                        <h2 className="text-xl font-bold text-primary mb-4 flex items-center gap-2">
                             <FaSave className="text-blue-500" />
                             Saved Ideas
                         </h2>
                         {savedIdeas.length === 0 ? (
-                            <div className="text-center py-8 text-gray-600 dark:text-gray-400">
+                            <div className="text-center py-8 text-neutral-600 dark:text-neutral-400">
                                 <p className="mb-2">No saved ideas yet.</p>
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={() => setActiveTab("generator")}
-                                    className="bg-indigo-500 dark:bg-indigo-600 text-white dark:text-gray-100 px-4 py-2 rounded-lg"
+                                    className="bg-primary text-white px-4 py-2 rounded-lg"
                                 >
                                     Generate Now
                                 </motion.button>
@@ -454,30 +454,30 @@ const ProjectGenerator = React.memo(() => {
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
                                         transition={{ duration: 0.2 }}
-                                        className="bg-gray-300 dark:bg-gray-700 p-4 rounded-lg"
+                                        className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 mt-6"
                                     >
                                         <div className="flex flex-col gap-3">
                                             <div className="flex gap-2">
-                                                <span className="px-2 py-1 bg-gray-400 dark:bg-gray-600 text-gray-600 dark:text-gray-400 rounded-full text-xs">
+                                                <span className="bg-accent text-white px-3 py-1 rounded-lg text-xs ml-2">
                                                     {i.branch}
                                                 </span>
                                                 <span
-                                                    className={`px-2 py-1 rounded-full text-xs ${
+                                                    className={`bg-accent text-white px-3 py-1 rounded-lg text-xs ml-2 ${
                                                         i.difficulty === "Easy"
-                                                            ? "bg-green-400 dark:bg-green-600 text-green-600 dark:text-green-400"
+                                                            ? "bg-success"
                                                             : i.difficulty ===
                                                               "Medium"
-                                                            ? "bg-yellow-400 dark:bg-yellow-600 text-yellow-600 dark:text-yellow-400"
-                                                            : "bg-red-400 dark:bg-red-600 text-red-600 dark:text-red-400"
+                                                            ? "bg-accent"
+                                                            : "bg-error"
                                                     }`}
                                                 >
                                                     {i.difficulty}
                                                 </span>
                                             </div>
-                                            <p className="text-gray-600 dark:text-gray-400">
+                                            <p className="text-neutral-600 dark:text-neutral-400">
                                                 {i.ideaText}
                                             </p>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                            <p className="text-xs text-neutral-500 dark:text-neutral-400">
                                                 Saved:{" "}
                                                 {new Date(
                                                     i.createdAt
@@ -490,7 +490,7 @@ const ProjectGenerator = React.memo(() => {
                                                     onClick={() =>
                                                         handleCopy(i.ideaText)
                                                     }
-                                                    className="p-2 bg-gray-400 dark:bg-gray-600 text-gray-600 dark:text-gray-400 rounded-lg"
+                                                    className="bg-primary text-white px-3 py-1 rounded-lg text-xs ml-2"
                                                 >
                                                     <FaCopy />
                                                 </motion.button>
@@ -502,10 +502,10 @@ const ProjectGenerator = React.memo(() => {
                                                             i.ideaText
                                                         )
                                                     }
-                                                    className={`p-2 rounded-lg ${
+                                                    className={`bg-primary text-white px-3 py-1 rounded-lg text-xs ml-2 ${
                                                         isPremium
-                                                            ? "bg-indigo-500 dark:bg-indigo-600 text-white dark:text-gray-100"
-                                                            : "bg-gray-700 dark:bg-gray-800 text-gray-400 dark:text-gray-500"
+                                                            ? "bg-primary"
+                                                            : "bg-neutral-800 text-neutral-400"
                                                     }`}
                                                 >
                                                     <FaFilePdf />
@@ -516,7 +516,7 @@ const ProjectGenerator = React.memo(() => {
                                                     onClick={() =>
                                                         handleDelete(i.$id)
                                                     }
-                                                    className="p-2 bg-red-400 dark:bg-red-600 text-red-600 dark:text-red-400 rounded-lg"
+                                                    className="bg-error text-white px-3 py-1 rounded-lg text-xs ml-2"
                                                 >
                                                     <FaTrash />
                                                 </motion.button>
@@ -536,7 +536,7 @@ const ProjectGenerator = React.memo(() => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
                 id="notification"
-                className="fixed bottom-4 right-4 hidden items-center p-3 bg-green-400 dark:bg-green-600 text-green-600 dark:text-green-400 rounded-lg"
+                className="fixed bottom-4 right-4 hidden items-center p-3 bg-success text-white rounded-lg"
             >
                 <FaSave className="mr-2" />
                 <span>Idea saved!</span>
@@ -547,7 +547,7 @@ const ProjectGenerator = React.memo(() => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
                 id="deleteNotification"
-                className="fixed bottom-4 right-4 hidden items-center p-3 bg-red-400 dark:bg-red-600 text-red-600 dark:text-red-400 rounded-lg"
+                className="fixed bottom-4 right-4 hidden items-center p-3 bg-error text-white rounded-lg"
             >
                 <FaTrash className="mr-2" />
                 <span>Idea deleted!</span>
@@ -558,7 +558,7 @@ const ProjectGenerator = React.memo(() => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
                 id="copyNotification"
-                className="fixed bottom-4 right-4 hidden items-center p-3 bg-gray-400 dark:bg-gray-600 text-gray-600 dark:text-gray-400 rounded-lg"
+                className="fixed bottom-4 right-4 hidden items-center p-3 bg-accent text-white rounded-lg"
             >
                 <FaCopy className="mr-2" />
                 <span>Copied!</span>
@@ -569,7 +569,7 @@ const ProjectGenerator = React.memo(() => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
                 id="exportNotification"
-                className="fixed bottom-4 right-4 hidden items-center p-3 bg-indigo-500 dark:bg-indigo-600 text-white dark:text-gray-100 rounded-lg"
+                className="fixed bottom-4 right-4 hidden items-center p-3 bg-primary text-white rounded-lg"
             >
                 <FaFilePdf className="mr-2" />
                 <span>Exported!</span>

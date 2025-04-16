@@ -70,7 +70,7 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex overflow-hidden items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700">
+        <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-neutral-50 via-neutral-100 to-neutral-200 dark:from-neutral-900 dark:via-neutral-800 dark:to-black">
             <div className="absolute inset-0 bg-grid-gray-200 dark:bg-grid-gray-800 opacity-5 z-0"></div>
             <div className="relative inset-0 z-0">
                 {[...Array(6)].map((_, i) => (
@@ -129,7 +129,7 @@ const Login = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.3 }}
-                        className="mt-6 text-center text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-gray-600 to-gray-800 dark:from-gray-400 dark:to-gray-500"
+                        className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary"
                     >
                         Welcome Back
                     </motion.h1>
@@ -137,7 +137,7 @@ const Login = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.4 }}
-                        className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400"
+                        className="text-sm text-neutral-600 dark:text-neutral-300"
                     >
                         Sign in to access your tools and project ideas
                     </motion.p>
@@ -197,7 +197,7 @@ const Login = () => {
                     whileTap={{ scale: 0.98 }}
                     onClick={handleGoogleLogin}
                     disabled={isLoading || isSubmitting}
-                    className="group relative w-full flex justify-center py-3 px-4 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none transition duration-150 ease-in-out"
+                    className="bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-xl shadow-sm text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-700 focus:outline-none transition duration-150 ease-in-out"
                 >
                     <span className="absolute left-0 inset-y-0 flex items-center pl-3">
                         <svg className="h-5 w-5" viewBox="0 0 48 48">
@@ -227,7 +227,7 @@ const Login = () => {
                         <div className="w-full border-t border-gray-300 dark:border-gray-700"></div>
                     </div>
                     <div className="relative flex justify-center text-sm">
-                        <span className="px-2 bg-gradient-to-b from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 text-gray-500 dark:text-gray-400">
+                        <span className="px-2 bg-gradient-to-b from-neutral-50 via-neutral-100 to-neutral-200 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-700 text-neutral-500 dark:text-neutral-400">
                             Or continue with email
                         </span>
                     </div>
@@ -240,11 +240,11 @@ const Login = () => {
                     onSubmit={handleLogin}
                     className="mt-8 space-y-6"
                 >
-                    <div className="rounded-2xl shadow-lg bg-white dark:bg-gray-800 p-8 space-y-6">
+                    <div className="rounded-2xl shadow-lg bg-white dark:bg-neutral-800 p-8 space-y-6">
                         <div>
                             <label
                                 htmlFor="email"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
                             >
                                 Email address
                             </label>
@@ -268,7 +268,7 @@ const Login = () => {
                                     required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="focus:ring-gray-500 dark:focus:ring-gray-400 focus:border-gray-500 dark:focus:border-gray-400 block w-full pl-10 pr-3 py-3 border-gray-300 dark:border-gray-700 rounded-md text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+                                    className="focus:ring-primary dark:focus:ring-primary focus:border-primary dark:focus:border-primary block w-full pl-10 pr-3 py-3 border-neutral-300 dark:border-neutral-700 rounded-md text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500"
                                     placeholder="you@example.com"
                                 />
                             </div>
@@ -277,7 +277,7 @@ const Login = () => {
                         <div>
                             <label
                                 htmlFor="password"
-                                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                                className="block text-sm font-medium text-neutral-700 dark:text-neutral-300"
                             >
                                 Password
                             </label>
@@ -306,7 +306,7 @@ const Login = () => {
                                     onChange={(e) =>
                                         setPassword(e.target.value)
                                     }
-                                    className="focus:ring-gray-500 dark:focus:ring-gray-400 focus:border-gray-500 dark:focus:border-gray-400 block w-full pl-10 pr-3 py-3 border-gray-300 dark:border-gray-700 rounded-md text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+                                    className="focus:ring-primary dark:focus:ring-primary focus:border-primary dark:focus:border-primary block w-full pl-10 pr-3 py-3 border-neutral-300 dark:border-neutral-700 rounded-md text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 dark:placeholder-neutral-500"
                                     placeholder="••••••••"
                                 />
                             </div>
@@ -318,11 +318,11 @@ const Login = () => {
                                 whileTap={{ scale: 0.98 }}
                                 type="submit"
                                 disabled={isLoading || isSubmitting}
-                                className="group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white dark:text-gray-100 bg-gradient-to-r from-gray-600 to-gray-800 dark:from-gray-500 dark:to-gray-700 hover:from-gray-700 hover:to-gray-900 dark:hover:from-gray-600 dark:hover:to-gray-800 focus:outline-none transition duration-150 ease-in-out"
+                                className="group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white dark:text-neutral-100 bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-primary focus:outline-none transition duration-150 ease-in-out"
                             >
                                 {isSubmitting ? (
                                     <svg
-                                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white dark:text-gray-100"
+                                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white dark:text-neutral-100"
                                         xmlns="http://www.w3.org/2000/svg"
                                         fill="none"
                                         viewBox="0 0 24 24"
@@ -353,12 +353,12 @@ const Login = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.7 }}
-                    className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400"
+                    className="mt-8 text-center text-sm text-neutral-600 dark:text-neutral-400"
                 >
                     Don't have an account?{" "}
                     <Link
                         to="/signup"
-                        className="font-medium text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition duration-150 ease-in-out"
+                        className="font-medium text-primary hover:text-secondary transition duration-150 ease-in-out"
                     >
                         Sign up now
                     </Link>

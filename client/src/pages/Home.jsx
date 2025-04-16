@@ -24,8 +24,8 @@ const Home = () => {
     }, []);
 
     return (
-        <div className="min-h-screen flex flex-col bg-gradient-to-b from-indigo-50 via-purple-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-black pt-20 pb-8 px-4 overflow-hidden">
-            <div className="absolute inset-0 bg-grid-indigo dark:bg-grid-gray-700 opacity-5 z-0"></div>
+        <div className="min-h-screen flex flex-col bg-gradient-to-b from-neutral-50 via-neutral-100 to-neutral-200 dark:from-neutral-900 dark:via-neutral-800 dark:to-neutral-950 pt-20 pb-8 px-4 overflow-hidden">
+            <div className="absolute inset-0 bg-grid-indigo dark:bg-grid-indigo opacity-10 z-0"></div>
             <div className="absolute inset-0 z-0 overflow-hidden">
                 {[...Array(6)].map((_, i) => (
                     <div
@@ -37,24 +37,10 @@ const Home = () => {
                             left: `${Math.random() * 80}%`,
                             width: `${Math.random() * 200 + 100}px`,
                             height: `${Math.random() * 200 + 100}px`,
-                            background: `radial-gradient(circle, rgba(${Math.floor(
-                                Math.random() * 100 + 155
-                            )}, ${Math.floor(
-                                Math.random() * 50 + 90
-                            )}, ${Math.floor(
-                                Math.random() * 155 + 100
-                            )}, 0.15), transparent) dark:radial-gradient(circle, rgba(${Math.floor(
-                                Math.random() * 50 + 100
-                            )}, ${Math.floor(
-                                Math.random() * 50 + 100
-                            )}, ${Math.floor(
-                                Math.random() * 50 + 100
-                            )}, 0.15), transparent)`,
+                            background: `radial-gradient(circle, rgba(79, 70, 229, 0.15), transparent) dark:radial-gradient(circle, rgba(139, 92, 246, 0.15), transparent)`,
                             borderRadius: "50%",
                             filter: "blur(60px)",
-                            animation: `float ${
-                                Math.random() * 10 + 15
-                            }s ease-in-out infinite`,
+                            animation: `float ${Math.random() * 10 + 15}s ease-in-out infinite`,
                         }}
                     />
                 ))}
@@ -72,7 +58,7 @@ const Home = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.2 }}
-                        className="text-4xl sm:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 tracking-tight"
+                        className="text-4xl sm:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#4f46e5] to-[#fbbf24] tracking-tight"
                     >
                         Welcome to Toolpunk
                     </motion.h1>
@@ -80,10 +66,9 @@ const Home = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.3 }}
-                        className="mt-4 text-lg sm:text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto"
+                        className="mt-4 text-lg sm:text-xl text-neutral-600 dark:text-neutral-300 max-w-2xl mx-auto"
                     >
-                        Free tools for students: project ideas, railway PNR
-                        checks, and more!
+                        Free tools for students: project ideas, railway PNR checks, and more!
                     </motion.p>
                 </motion.div>
 
@@ -97,42 +82,47 @@ const Home = () => {
                     <motion.div
                         whileHover={{
                             scale: 1.02,
-                            boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
+                            boxShadow: "0 10px 25px -5px rgba(0,0,0,0.1)",
                         }}
-                        className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm ring-1 ring-indigo-100/50 dark:ring-gray-700/50"
+                        className="bg-white dark:bg-neutral-800/90 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-[#e0e7ff]/50 dark:border-[#4338ca]/50"
                     >
-                        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2 flex items-center gap-2">
-                            <span className="text-2xl">🎓</span> Project Ideas
+                        <h2 className="text-xl font-semibold text-neutral-800 dark:text-neutral-100 mb-2 flex items-center gap-2">
+                            <span className="text-2xl text-[#4f46e5]">🎓</span> Project Ideas
                         </h2>
-                        <p className="text-gray-700 dark:text-gray-400 mb-4">
-                            Get 3 free project ideas daily or go premium for
-                            unlimited.
+                        <p className="text-neutral-600 dark:text-neutral-400 mb-4">
+                            Get 3 free project ideas daily or go premium for unlimited.
                         </p>
                         <Link
                             to="/projectgenerator"
-                            className="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-500 dark:to-purple-500 text-white dark:text-gray-100 px-4 py-2 rounded-lg hover:from-indigo-700 hover:to-purple-700 dark:hover:from-indigo-600 dark:hover:to-purple-600 transition"
+                            className="inline-flex items-center bg-[#4f46e5] hover:bg-[#6366f1] text-white px-4 py-2 rounded-lg transition-all shadow-md hover:shadow-lg"
                         >
                             Try Now
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                            </svg>
                         </Link>
                     </motion.div>
                     <motion.div
                         whileHover={{
                             scale: 1.02,
-                            boxShadow: "0 5px 15px rgba(0,0,0,0.1)",
+                            boxShadow: "0 10px 25px -5px rgba(0,0,0,0.1)",
                         }}
-                        className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm opacity-75"
+                        className="bg-white/80 dark:bg-neutral-800/60 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-neutral-200/30 dark:border-neutral-700/30"
                     >
-                        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2 flex items-center gap-2">
-                            <span className="text-2xl">🚂</span> PNR Checker
+                        <h2 className="text-xl font-semibold text-neutral-800/80 dark:text-neutral-100/90 mb-2 flex items-center gap-2">
+                            <span className="text-2xl text-[#8b5cf6]">🚂</span> PNR Checker
                         </h2>
-                        <p className="text-gray-700 dark:text-gray-400 mb-4">
+                        <p className="text-neutral-600/80 dark:text-neutral-400/80 mb-4">
                             Check railway PNR status (coming soon).
                         </p>
                         <button
                             disabled
-                            className="bg-gray-300 dark:bg-gray-700 text-gray-600 dark:text-gray-400 px-4 py-2 rounded-lg cursor-not-allowed"
+                            className="bg-neutral-200 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400 px-4 py-2 rounded-lg cursor-not-allowed flex items-center"
                         >
                             Coming Soon
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                            </svg>
                         </button>
                     </motion.div>
                 </motion.div>
@@ -145,17 +135,20 @@ const Home = () => {
                         transition={{ delay: 0.6 }}
                         className="mt-12 text-center"
                     >
-                        <h2 className="text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 mb-4">
+                        <h2 className="text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#4f46e5] to-[#fbbf24] mb-4">
                             Unlock More with Premium
                         </h2>
-                        <p className="text-gray-700 dark:text-gray-400 mb-6 max-w-xl mx-auto">
+                        <p className="text-neutral-600 dark:text-neutral-400 mb-6 max-w-xl mx-auto">
                             Get unlimited project ideas for just ₹100/month.
                         </p>
                         <Link
                             to="/premium"
-                            className="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-500 dark:to-purple-500 text-white dark:text-gray-100 px-6 py-3 rounded-lg hover:from-indigo-700 hover:to-purple-700 dark:hover:from-indigo-600 dark:hover:to-purple-600 transition shadow-md hover:shadow-lg"
+                            className="inline-flex items-center bg-[#4f46e5] hover:bg-[#fbbf24] text-white px-6 py-3 rounded-lg transition-all shadow-lg hover:shadow-xl"
                         >
                             Go Premium
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
                         </Link>
                     </motion.div>
                 )}

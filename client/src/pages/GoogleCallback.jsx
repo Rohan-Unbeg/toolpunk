@@ -43,9 +43,9 @@ export default function GoogleCallback() {
 
     if (error) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-                <div className="text-red-500 mb-4">Error: {error}</div>
-                <p className="text-gray-800 dark:text-gray-200">
+            <div className="flex flex-col items-center justify-center min-h-screen bg-neutral-50 dark:bg-neutral-900">
+                <div className="text-error mb-4">Error: {error}</div>
+                <p className="text-neutral-900 dark:text-neutral-100">
                     Redirecting to login...
                 </p>
             </div>
@@ -53,9 +53,9 @@ export default function GoogleCallback() {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-            <FaSpinner className="animate-spin text-indigo-600 text-4xl mb-4" />
-            <p className="text-gray-800 dark:text-gray-200">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-neutral-50 dark:bg-neutral-900">
+            <FaSpinner className="animate-spin text-primary text-4xl mb-4" />
+            <p className="text-neutral-900 dark:text-neutral-100">
                 Completing Google authentication...
             </p>
         </div>

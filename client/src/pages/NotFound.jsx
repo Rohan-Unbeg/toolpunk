@@ -6,8 +6,8 @@ import { FaRocket } from "react-icons/fa";
 
 const NotFound = () => {
     return (
-        <div className="min-h-screen flex flex-col bg-gradient-to-b from-indigo-50 via-purple-50 to-blue-50 dark:from-gray-800 dark:via-gray-900 dark:to-black pt-20 px-4 overflow-hidden">
-            <div className="absolute inset-0 bg-grid-indigo opacity-5 dark:bg-grid-gray z-0"></div>
+        <div className="min-h-screen flex flex-col bg-gradient-to-b from-neutral-50 via-neutral-100 to-neutral-200 dark:from-neutral-900 dark:via-neutral-800 dark:to-black pt-20 px-4 overflow-hidden">
+            <div className="absolute inset-0 bg-grid-indigo opacity-5 dark:bg-grid-indigo z-0"></div>
             <div className="absolute inset-0 z-0 overflow-hidden">
                 {[...Array(6)].map((_, i) => (
                     <div
@@ -60,7 +60,7 @@ const NotFound = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.3 }}
-                        className="text-5xl sm:text-6xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 tracking-tight"
+                        className="text-5xl sm:text-6xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-tight"
                     >
                         404 - Lost in Space
                     </motion.h1>
@@ -68,7 +68,7 @@ const NotFound = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.4 }}
-                        className="mt-4 text-lg text-gray-600 dark:text-gray-300"
+                        className="mt-4 text-lg text-neutral-600 dark:text-neutral-300"
                     >
                         Oops! This page is floating in the void. Let’s get you
                         back to Toolpunk!
@@ -83,7 +83,7 @@ const NotFound = () => {
                 >
                     <Link
                         to="/"
-                        className="inline-flex items-center bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-500 dark:to-purple-500 text-white px-6 py-3 rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 dark:hover:from-indigo-600 dark:hover:to-purple-600 transition shadow-md hover:shadow-lg"
+                        className="inline-flex items-center bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-lg font-semibold hover:from-secondary hover:to-primary transition shadow-md hover:shadow-lg"
                     >
                         <FaRocket className="mr-2" />
                         Back to Home

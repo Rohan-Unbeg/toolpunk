@@ -1,139 +1,49 @@
 @import "tailwindcss";
 
-
 @custom-variant dark (&:where(.dark, .dark *));
 
-
-
+/* Define color variables in Tailwind config */
 html,
 body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background: linear-gradient(to bottom, #EEF2FF, #F3E8FF, #E0F2FE);
-  /* Match your gradient */
+    @apply min-h-screen m-0 p-0 bg-gradient-to-b from-neutral-50 via-purple-50 to-blue-50 dark:from-neutral-900 dark:via-gray-800 dark:to-black;
 }
 
-/* /client/src/styles/index.css */
 .bg-grid-indigo {
-  background-image: linear-gradient(to right, rgba(79, 70, 229, 0.1) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(79, 70, 229, 0.1) 1px, transparent 1px);
-  background-size: 20px 20px;
+    @apply bg-[length:20px_20px];
+    background-image: linear-gradient(to right, rgba(99, 102, 241, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
 }
 
 .blob {
-  pointer-events: none;
-}
-
-@keyframes float {
-  0% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-20px);
-  }
-
-  100% {
-    transform: translateY(0);
-  }
+    @apply pointer-events-none;
 }
 
 .loader {
-  display: inline-block;
-  width: 24px;
-  height: 24px;
+    @apply inline-block w-6 h-6;
 }
 
 .loader .circular {
-  animation: rotate 2s linear infinite;
-  height: 100%;
-  width: 100%;
+    @apply animate-[rotate_2s_linear_infinite] h-full w-full;
 }
 
 .loader .path {
-  stroke: #4f46e5;
-  stroke-linecap: round;
-  animation: dash 1.5s ease-in-out infinite;
+    @apply stroke-primary;
+    stroke-linecap: round;
+    animation: dash 1.5s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0); }
 }
 
 @keyframes rotate {
-  100% {
-    transform: rotate(360deg);
-  }
+    100% { transform: rotate(360deg); }
 }
 
 @keyframes dash {
-  0% {
-    stroke-dasharray: 1, 150;
-    stroke-dashoffset: 0;
-  }
-
-  50% {
-    stroke-dasharray: 90, 150;
-    stroke-dashoffset: -35;
-  }
-
-  100% {
-    stroke-dasharray: 90, 150;
-    stroke-dashoffset: -124;
-  }
-}
-
-@keyframes sparkle {
-  0% {
-    transform: translateY(-100%) rotate(45deg);
-    opacity: 0;
-  }
-
-  50% {
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateY(200%) rotate(45deg);
-    opacity: 0;
-  }
-}
-
-.animate-sparkle {
-  animation: sparkle 1.5s ease-in-out infinite;
-}
-
-@property --gradient-start {
-  syntax: "<color>";
-  initial-value: #6366f1;
-  inherits: false;
-}
-
-@property --gradient-end {
-  syntax: "<color>";
-  initial-value: #8b5cf6;
-  inherits: false;
-}
-
-@keyframes text-gradient {
-  0% {
-    --gradient-start: #6366f1;
-    --gradient-end: #8b5cf6;
-  }
-
-  50% {
-    --gradient-start: #8b5cf6;
-    --gradient-end: #d946ef;
-  }
-
-  100% {
-    --gradient-start: #6366f1;
-    --gradient-end: #8b5cf6;
-  }
-}
-
-.animated-text-gradient {
-  animation: text-gradient 4s ease infinite;
-  color: linear-gradient(to right,
-      var(--gradient-start),
-      var(--gradient-end));
-  -webkit-text-fill-color: transparent;
-  background: none !important;
+    0% { stroke-dasharray: 1, 150; stroke-dashoffset: 0; }
+    50% { stroke-dasharray: 90, 150; stroke-dashoffset: -35; }
+    100% { stroke-dasharray: 90, 150; stroke-dashoffset: -124; }
 }
