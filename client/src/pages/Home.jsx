@@ -4,9 +4,7 @@ import { motion } from "framer-motion";
 import appwriteService from "../services/appwrite";
 
 const Home = () => {
-    const [userName, setUserName] = useState("");
     const [isPremium, setIsPremium] = useState(false);
-    const nav = useNavigate();
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -58,7 +56,7 @@ const Home = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.2 }}
-                        className="text-4xl sm:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[#4f46e5] to-[#fbbf24] tracking-tight"
+                        className="text-4xl sm:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-primary)] to-[#fbbf24] tracking-tight"
                     >
                         Welcome to Toolpunk
                     </motion.h1>
@@ -87,14 +85,14 @@ const Home = () => {
                         className="bg-white dark:bg-neutral-800/90 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-[#e0e7ff]/50 dark:border-[#4338ca]/50"
                     >
                         <h2 className="text-xl font-semibold text-neutral-800 dark:text-neutral-100 mb-2 flex items-center gap-2">
-                            <span className="text-2xl text-[#4f46e5]">🎓</span> Project Ideas
+                            <span className="text-2xl text-[var(--color-primary)]">🎓</span> Project Ideas
                         </h2>
                         <p className="text-neutral-600 dark:text-neutral-400 mb-4">
                             Get 3 free project ideas daily or go premium for unlimited.
                         </p>
                         <Link
                             to="/projectgenerator"
-                            className="inline-flex items-center bg-[#4f46e5] hover:bg-[#6366f1] text-white px-4 py-2 rounded-lg transition-all shadow-md hover:shadow-lg"
+                            className="inline-flex items-center bg-[var(--color-primary)] hover:bg-[#6366f1] text-white px-4 py-2 rounded-lg transition-all shadow-md hover:shadow-lg"
                         >
                             Try Now
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
@@ -135,7 +133,7 @@ const Home = () => {
                         transition={{ delay: 0.6 }}
                         className="mt-12 text-center"
                     >
-                        <h2 className="text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[#4f46e5] to-[#fbbf24] mb-4">
+                        <h2 className="text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-[var(--color-primary)] to-[#fbbf24] mb-4">
                             Unlock More with Premium
                         </h2>
                         <p className="text-neutral-600 dark:text-neutral-400 mb-6 max-w-xl mx-auto">
@@ -143,11 +141,11 @@ const Home = () => {
                         </p>
                         <Link
                             to="/premium"
-                            className="inline-flex items-center bg-[#4f46e5] hover:bg-[#fbbf24] text-white px-6 py-3 rounded-lg transition-all shadow-lg hover:shadow-xl"
+                            className="inline-flex items-center bg-[var(--color-primary)] hover:bg-[#fbbf24] text-white px-6 py-3 rounded-lg transition-all shadow-lg hover:shadow-xl"
                         >
                             Go Premium
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
                             </svg>
                         </Link>
                     </motion.div>

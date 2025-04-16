@@ -182,29 +182,29 @@ const ProjectGenerator = React.memo(() => {
                     transition={{ duration: 0.2 }}
                     className="fixed inset-0 z-50 bg-black/40 dark:bg-black/60 flex items-center justify-center px-4"
                 >
-                    <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-lg p-8">
-                        <h2 className="text-neutral-900 dark:text-neutral-100 font-semibold">
+                    <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-lg p-6 max-w-sm w-full">
+                        <h2 className="text-lg font-semibold text-neutral-800 dark:text-neutral-100 mb-2">
                             Delete this idea?
                         </h2>
-                        <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+                        <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-6">
                             This action cannot be undone.
                         </p>
-                        <div className="flex justify-center gap-4">
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={confirmDelete}
-                                className="bg-error text-white px-3 py-1 rounded-lg text-xs ml-2"
-                            >
-                                Delete
-                            </motion.button>
+                        <div className="flex justify-end gap-3">
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={() => setShowDeleteModal(false)}
-                                className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 mt-6"
+                                className="px-4 py-2 text-neutral-600 dark:text-neutral-300 rounded-lg border border-neutral-300 dark:border-neutral-600"
                             >
                                 Cancel
+                            </motion.button>
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={confirmDelete}
+                                className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-primary-700 transition-colors"
+                            >
+                                Delete
                             </motion.button>
                         </div>
                     </div>
@@ -216,13 +216,13 @@ const ProjectGenerator = React.memo(() => {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="text-center mb-6"
+                    className="text-center mb-8"
                 >
-                    <h1 className="text-2xl font-bold text-primary mb-2 flex items-center gap-2">
-                        <FaGraduationCap className="text-blue-500" />
+                    <h1 className="text-3xl font-bold text-[var(--color-primary)] mb-3 flex items-center justify-center gap-3">
+                        <FaGraduationCap className="text-[var(--color-primary)]" />
                         Project Idea Generator
                     </h1>
-                    <p className="text-neutral-700 dark:text-neutral-300 mb-4">
+                    <p className="text-neutral-600 dark:text-neutral-400 mb-6">
                         {isPremium
                             ? "Unlimited project ideas!"
                             : `${3 - dailyCount}/3 ideas left today.`}
@@ -234,24 +234,24 @@ const ProjectGenerator = React.memo(() => {
                         >
                             <Link
                                 to="/premium"
-                                className="bg-gradient-to-r from-primary to-secondary text-white px-4 py-2 rounded-lg hover:from-secondary hover:to-primary transition"
+                                className="inline-flex items-center bg-[var(--color-primary)] hover:bg-accent-400 text-white px-5 py-2.5 rounded-lg transition-all shadow-md hover:shadow-lg"
                             >
-                                <FaStar />
+                                <FaStar className="mr-2" />
                                 Upgrade to Premium
                             </Link>
                         </motion.div>
                     )}
                 </motion.div>
 
-                <div className="mb-4 bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 mt-6">
+                <div className="flex bg-neutral-100 dark:bg-neutral-800 rounded-lg p-1 mb-6">
                     <motion.button
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.97 }}
                         onClick={() => setActiveTab("generator")}
-                        className={`flex-1 py-2 px-3 text-sm transition-colors duration-200 ${
+                        className={`flex-1 py-2 px-4 text-sm font-medium transition-colors duration-200 rounded-md ${
                             activeTab === "generator"
-                                ? "bg-primary text-white"
-                                : "text-neutral-600 dark:text-neutral-400"
+                                ? "bg-white dark:bg-neutral-700 text-[var(--color-primary)] shadow-sm"
+                                : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200"
                         }`}
                     >
                         Generate
@@ -260,10 +260,10 @@ const ProjectGenerator = React.memo(() => {
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.97 }}
                         onClick={() => setActiveTab("saved")}
-                        className={`flex-1 py-2 px-3 text-sm transition-colors duration-200 ${
+                        className={`flex-1 py-2 px-4 text-sm font-medium transition-colors duration-200 rounded-md ${
                             activeTab === "saved"
-                                ? "bg-primary text-white"
-                                : "text-neutral-600 dark:text-neutral-400"
+                                ? "bg-white dark:bg-neutral-700 text-[var(--color-primary)] shadow-sm"
+                                : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-200"
                         }`}
                     >
                         Saved ({savedIdeas.length})
@@ -276,12 +276,12 @@ const ProjectGenerator = React.memo(() => {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
-                        className="mb-4 p-3 bg-error text-white rounded-md flex justify-between"
+                        className="mb-6 p-3 bg-error-100 dark:bg-error-900/50 text-error-700 dark:text-error-300 rounded-lg flex justify-between items-center"
                     >
                         <span>{error}</span>
                         <button
                             onClick={() => setError("")}
-                            className="text-white"
+                            className="text-error-500 dark:text-error-400 hover:text-error-700 dark:hover:text-error-200"
                         >
                             ×
                         </button>
@@ -290,18 +290,16 @@ const ProjectGenerator = React.memo(() => {
 
                 {activeTab === "generator" && (
                     <>
-                        <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 mt-6">
-                            <div className="grid grid-cols-1 gap-4">
+                        <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 mb-6 border border-[var(--color-primary)]/20">
+                            <div className="grid grid-cols-1 gap-5">
                                 <div>
-                                    <label className="block text-sm text-neutral-600 dark:text-neutral-400 mb-1">
+                                    <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                                         Branch
                                     </label>
                                     <select
                                         value={branch}
-                                        onChange={(e) =>
-                                            setBranch(e.target.value)
-                                        }
-                                        className="w-full p-3 bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 text-neutral-900 dark:text-neutral-100 rounded-lg transition-colors duration-200"
+                                        onChange={(e) => setBranch(e.target.value)}
+                                        className="w-full px-4 py-2.5 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 text-neutral-800 dark:text-neutral-200 rounded-lg transition-colors focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
                                     >
                                         {branches.map((b) => (
                                             <option key={b} value={b}>
@@ -311,15 +309,13 @@ const ProjectGenerator = React.memo(() => {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm text-neutral-600 dark:text-neutral-400 mb-1">
+                                    <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
                                         Difficulty
                                     </label>
                                     <select
                                         value={difficulty}
-                                        onChange={(e) =>
-                                            setDifficulty(e.target.value)
-                                        }
-                                        className="w-full p-3 bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 text-neutral-900 dark:text-neutral-100 rounded-lg transition-colors duration-200"
+                                        onChange={(e) => setDifficulty(e.target.value)}
+                                        className="w-full px-4 py-2.5 bg-white dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-600 text-neutral-800 dark:text-neutral-200 rounded-lg transition-colors focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
                                     >
                                         {difficulties.map((d) => (
                                             <option key={d} value={d}>
@@ -330,11 +326,11 @@ const ProjectGenerator = React.memo(() => {
                                 </div>
                             </div>
                             <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
                                 onClick={handleGenerate}
                                 disabled={loading || !userId}
-                                className="mt-6 w-full bg-primary text-white p-3 rounded-lg disabled:opacity-50 flex items-center justify-center gap-2"
+                                className="mt-6 w-full bg-[var(--color-primary)] hover:bg-primary-500 text-white py-3 rounded-lg disabled:opacity-60 flex items-center justify-center gap-2 transition-colors"
                             >
                                 {loading ? (
                                     <>
@@ -349,8 +345,8 @@ const ProjectGenerator = React.memo(() => {
                                 )}
                             </motion.button>
                             {!isPremium && (
-                                <div className="mt-3 text-sm text-neutral-600 dark:text-neutral-400 text-center">
-                                    {dailyCount}/3 free generations
+                                <div className="mt-3 text-sm text-neutral-500 dark:text-neutral-400 text-center">
+                                    {dailyCount}/3 free generations today
                                 </div>
                             )}
                         </div>
@@ -360,24 +356,24 @@ const ProjectGenerator = React.memo(() => {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.3 }}
-                                className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 mt-6"
+                                className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 mb-6 border border-[var(--color-primary)]/20"
                             >
-                                <h2 className="text-xl font-bold text-primary mb-4 flex items-center gap-2">
-                                    <FaLightbulb className="text-yellow-300" />
-                                    Your Idea
+                                <h2 className="text-xl font-bold text-[var(--color-primary)] mb-4 flex items-center gap-3">
+                                    <FaLightbulb className="text-accent-400" />
+                                    Your Project Idea
                                 </h2>
-                                <p className="text-neutral-600 dark:text-neutral-400 mb-4">
-                                    {idea}
-                                </p>
+                                <div className="bg-neutral-50 dark:bg-neutral-800/50 p-4 rounded-lg mb-6">
+                                    <p className="text-neutral-700 dark:text-neutral-300 whitespace-pre-line">
+                                        {idea}
+                                    </p>
+                                </div>
                                 <div className="flex flex-wrap gap-3">
                                     <motion.button
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
                                         onClick={handleSave}
-                                        disabled={
-                                            saveLoading || !idea || !userId
-                                        }
-                                        className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50"
+                                        disabled={saveLoading || !idea || !userId}
+                                        className="flex-1 bg-[var(--color-primary)] hover:bg-primary-500 text-white px-4 py-2.5 rounded-lg flex items-center justify-center gap-2 disabled:opacity-60 transition-colors"
                                     >
                                         {saveLoading ? (
                                             <>
@@ -395,7 +391,7 @@ const ProjectGenerator = React.memo(() => {
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
                                         onClick={() => handleCopy(idea)}
-                                        className="bg-primary text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                                        className="flex-1 bg-secondary-500 hover:bg-secondary-600 text-white px-4 py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors"
                                     >
                                         <FaCopy />
                                         Copy
@@ -404,16 +400,16 @@ const ProjectGenerator = React.memo(() => {
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
                                         onClick={() => handleExportPdf(idea)}
-                                        className={`px-4 py-2 rounded-lg flex items-center gap-2 ${
+                                        className={`flex-1 px-4 py-2.5 rounded-lg flex items-center justify-center gap-2 transition-colors ${
                                             isPremium
-                                                ? "bg-primary text-white"
-                                                : "bg-neutral-800 text-neutral-400"
+                                                ? "bg-accent-400 hover:bg-accent-500 text-white"
+                                                : "bg-neutral-200 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400"
                                         }`}
                                     >
                                         {isPremium ? (
                                             <>
                                                 <FaFilePdf />
-                                                Export
+                                                Export PDF
                                             </>
                                         ) : (
                                             <>
@@ -429,21 +425,21 @@ const ProjectGenerator = React.memo(() => {
                 )}
 
                 {activeTab === "saved" && (
-                    <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 mt-6">
-                        <h2 className="text-xl font-bold text-primary mb-4 flex items-center gap-2">
-                            <FaSave className="text-blue-500" />
+                    <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-6 border border-[var(--color-primary)]/20">
+                        <h2 className="text-xl font-bold text-[var(--color-primary)] mb-6 flex items-center gap-3">
+                            <FaSave className="text-secondary-500" />
                             Saved Ideas
                         </h2>
                         {savedIdeas.length === 0 ? (
-                            <div className="text-center py-8 text-neutral-600 dark:text-neutral-400">
-                                <p className="mb-2">No saved ideas yet.</p>
+                            <div className="text-center py-8 text-neutral-500 dark:text-neutral-400">
+                                <p className="mb-4">No saved ideas yet.</p>
                                 <motion.button
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={() => setActiveTab("generator")}
-                                    className="bg-primary text-white px-4 py-2 rounded-lg"
+                                    className="bg-[var(--color-primary)] hover:bg-primary-500 text-white px-5 py-2.5 rounded-lg"
                                 >
-                                    Generate Now
+                                    Generate New Idea
                                 </motion.button>
                             </div>
                         ) : (
@@ -454,72 +450,62 @@ const ProjectGenerator = React.memo(() => {
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
                                         transition={{ duration: 0.2 }}
-                                        className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 mt-6"
+                                        className="bg-neutral-50 dark:bg-neutral-800/50 rounded-lg p-5 border border-[var(--color-primary)]/20"
                                     >
-                                        <div className="flex flex-col gap-3">
+                                        <div className="flex flex-col gap-4">
                                             <div className="flex gap-2">
-                                                <span className="bg-accent text-white px-3 py-1 rounded-lg text-xs ml-2">
+                                                <span className="bg-[var(--color-primary)]/10 text-[var(--color-primary)] px-3 py-1 rounded-lg text-xs">
                                                     {i.branch}
                                                 </span>
                                                 <span
-                                                    className={`bg-accent text-white px-3 py-1 rounded-lg text-xs ml-2 ${
+                                                    className={`px-3 py-1 rounded-lg text-xs ${
                                                         i.difficulty === "Easy"
-                                                            ? "bg-success"
-                                                            : i.difficulty ===
-                                                              "Medium"
-                                                            ? "bg-accent"
-                                                            : "bg-error"
+                                                            ? "bg-success-100 dark:bg-success-900/50 text-success-800 dark:text-success-200"
+                                                            : i.difficulty === "Medium"
+                                                            ? "bg-accent-100 dark:bg-accent-900/50 text-accent-800 dark:text-accent-200"
+                                                            : "bg-error-100 dark:bg-error-900/50 text-error-800 dark:text-error-200"
                                                     }`}
                                                 >
                                                     {i.difficulty}
                                                 </span>
                                             </div>
-                                            <p className="text-neutral-600 dark:text-neutral-400">
+                                            <p className="text-neutral-700 dark:text-neutral-300 whitespace-pre-line">
                                                 {i.ideaText}
                                             </p>
-                                            <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                                                Saved:{" "}
-                                                {new Date(
-                                                    i.createdAt
-                                                ).toLocaleString()}
-                                            </p>
-                                            <div className="flex gap-2">
-                                                <motion.button
-                                                    whileHover={{ scale: 1.1 }}
-                                                    whileTap={{ scale: 0.9 }}
-                                                    onClick={() =>
-                                                        handleCopy(i.ideaText)
-                                                    }
-                                                    className="bg-primary text-white px-3 py-1 rounded-lg text-xs ml-2"
-                                                >
-                                                    <FaCopy />
-                                                </motion.button>
-                                                <motion.button
-                                                    whileHover={{ scale: 1.1 }}
-                                                    whileTap={{ scale: 0.9 }}
-                                                    onClick={() =>
-                                                        handleExportPdf(
-                                                            i.ideaText
-                                                        )
-                                                    }
-                                                    className={`bg-primary text-white px-3 py-1 rounded-lg text-xs ml-2 ${
-                                                        isPremium
-                                                            ? "bg-primary"
-                                                            : "bg-neutral-800 text-neutral-400"
-                                                    }`}
-                                                >
-                                                    <FaFilePdf />
-                                                </motion.button>
-                                                <motion.button
-                                                    whileHover={{ scale: 1.1 }}
-                                                    whileTap={{ scale: 0.9 }}
-                                                    onClick={() =>
-                                                        handleDelete(i.$id)
-                                                    }
-                                                    className="bg-error text-white px-3 py-1 rounded-lg text-xs ml-2"
-                                                >
-                                                    <FaTrash />
-                                                </motion.button>
+                                            <div className="flex justify-between items-center">
+                                                <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                                                    Saved: {new Date(i.createdAt).toLocaleString()}
+                                                </p>
+                                                <div className="flex gap-2">
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.1 }}
+                                                        whileTap={{ scale: 0.9 }}
+                                                        onClick={() => handleCopy(i.ideaText)}
+                                                        className="p-2 bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 rounded-lg hover:bg-neutral-300 dark:hover:bg-neutral-600 transition-colors"
+                                                    >
+                                                        <FaCopy />
+                                                    </motion.button>
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.1 }}
+                                                        whileTap={{ scale: 0.9 }}
+                                                        onClick={() => handleExportPdf(i.ideaText)}
+                                                        className={`p-2 rounded-lg transition-colors ${
+                                                            isPremium
+                                                                ? "bg-accent-400 hover:bg-accent-500 text-white"
+                                                                : "bg-neutral-200 dark:bg-neutral-700 text-neutral-500 dark:text-neutral-400"
+                                                        }`}
+                                                    >
+                                                        <FaFilePdf />
+                                                    </motion.button>
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.1 }}
+                                                        whileTap={{ scale: 0.9 }}
+                                                        onClick={() => handleDelete(i.$id)}
+                                                        className="p-2 bg-error-100 dark:bg-error-900/50 text-error-600 dark:text-error-300 rounded-lg hover:bg-error-200 dark:hover:bg-error-800 transition-colors"
+                                                    >
+                                                        <FaTrash />
+                                                    </motion.button>
+                                                </div>
                                             </div>
                                         </div>
                                     </motion.li>
@@ -530,16 +516,17 @@ const ProjectGenerator = React.memo(() => {
                 )}
             </div>
 
+            {/* Notifications */}
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
                 id="notification"
-                className="fixed bottom-4 right-4 hidden items-center p-3 bg-success text-white rounded-lg"
+                className="fixed bottom-6 right-6 hidden items-center p-4 bg-success-500 text-white rounded-lg shadow-lg"
             >
-                <FaSave className="mr-2" />
-                <span>Idea saved!</span>
+                <FaSave className="mr-3" />
+                <span>Idea saved successfully!</span>
             </motion.div>
             <motion.div
                 initial={{ opacity: 0 }}
@@ -547,10 +534,10 @@ const ProjectGenerator = React.memo(() => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
                 id="deleteNotification"
-                className="fixed bottom-4 right-4 hidden items-center p-3 bg-error text-white rounded-lg"
+                className="fixed bottom-6 right-6 hidden items-center p-4 bg-error-500 text-white rounded-lg shadow-lg"
             >
-                <FaTrash className="mr-2" />
-                <span>Idea deleted!</span>
+                <FaTrash className="mr-3" />
+                <span>Idea deleted successfully!</span>
             </motion.div>
             <motion.div
                 initial={{ opacity: 0 }}
@@ -558,10 +545,10 @@ const ProjectGenerator = React.memo(() => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
                 id="copyNotification"
-                className="fixed bottom-4 right-4 hidden items-center p-3 bg-accent text-white rounded-lg"
+                className="fixed bottom-6 right-6 hidden items-center p-4 bg-secondary-500 text-white rounded-lg shadow-lg"
             >
-                <FaCopy className="mr-2" />
-                <span>Copied!</span>
+                <FaCopy className="mr-3" />
+                <span>Copied to clipboard!</span>
             </motion.div>
             <motion.div
                 initial={{ opacity: 0 }}
@@ -569,10 +556,10 @@ const ProjectGenerator = React.memo(() => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
                 id="exportNotification"
-                className="fixed bottom-4 right-4 hidden items-center p-3 bg-primary text-white rounded-lg"
+                className="fixed bottom-6 right-6 hidden items-center p-4 bg-accent-400 text-white rounded-lg shadow-lg"
             >
-                <FaFilePdf className="mr-2" />
-                <span>Exported!</span>
+                <FaFilePdf className="mr-3" />
+                <span>Exported as PDF!</span>
             </motion.div>
         </div>
     );

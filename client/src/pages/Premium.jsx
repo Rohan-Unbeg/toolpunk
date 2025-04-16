@@ -38,7 +38,7 @@ const Premium = () => {
     if (!authLoaded) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-neutral-50 dark:bg-neutral-900">
-                <FaSpinner className="animate-spin text-primary text-4xl" />
+                <FaSpinner className="animate-spin text-[var(--color-primary)] text-4xl" />
             </div>
         );
     }
@@ -88,8 +88,8 @@ const Premium = () => {
                     transition={{ duration: 0.2 }}
                     className={`fixed top-20 left-0 right-0 mx-auto max-w-2xl rounded-lg p-4 flex items-center justify-between ${
                         error
-                            ? "bg-red-50 dark:bg-red-900/50 text-red-800 dark:text-red-300"
-                            : "bg-green-50 dark:bg-green-900/50 text-green-800 dark:text-green-300"
+                            ? "bg-error-100 dark:bg-error-900/50 text-error-800 dark:text-error-300"
+                            : "bg-success-100 dark:bg-success-900/50 text-success-800 dark:text-success-300"
                     }`}
                 >
                     <span>{error || success}</span>
@@ -99,8 +99,8 @@ const Premium = () => {
                         }
                         className={`rounded-full p-1 ${
                             error
-                                ? "bg-red-100 dark:bg-red-800/50 text-red-600 dark:text-red-400"
-                                : "bg-green-100 dark:bg-green-800/50 text-green-600 dark:text-green-400"
+                                ? "bg-error-200 dark:bg-error-800/50 text-error-600 dark:text-error-400"
+                                : "bg-success-200 dark:bg-success-800/50 text-success-600 dark:text-success-400"
                         }`}
                     >
                         ✕
@@ -115,10 +115,10 @@ const Premium = () => {
                     transition={{ duration: 0.3 }}
                     className="text-center mb-8"
                 >
-                    <h1 className="text-3xl font-bold text-primary flex items-center justify-center gap-2">
+                    <h1 className="text-3xl font-bold text-[var(--color-primary)] flex items-center justify-center gap-2">
                         Unlock Toolpunk Premium
                         {isPremium && (
-                            <span className="text-accent text-2xl">🌟</span>
+                            <span className="text-accent-400 text-2xl">🌟</span>
                         )}
                     </h1>
                     <p className="mt-2 text-base text-neutral-600 dark:text-neutral-400">
@@ -132,7 +132,7 @@ const Premium = () => {
                             whileTap={{ scale: 0.95 }}
                             onClick={handleInstamojoPayment}
                             disabled={loading}
-                            className="mt-4 bg-accent text-white dark:text-neutral-100 px-6 py-2 rounded-lg flex items-center mx-auto disabled:opacity-50"
+                            className="mt-4 bg-[var(--color-primary)] text-white px-6 py-2 rounded-lg flex items-center mx-auto disabled:opacity-50 shadow-md hover:shadow-lg hover:bg-primary-500 transition-colors"
                         >
                             {loading ? (
                                 <>
@@ -148,13 +148,13 @@ const Premium = () => {
                         <div className="mt-4 flex justify-center gap-4">
                             <Link
                                 to="/login"
-                                className="px-4 py-2 text-primary rounded-lg hover:bg-primary/10 dark:hover:bg-primary/20"
+                                className="px-4 py-2 text-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary)]/10"
                             >
                                 Log In
                             </Link>
                             <Link
                                 to="/signup"
-                                className="px-4 py-2 bg-primary text-white dark:text-neutral-100 rounded-lg hover:bg-secondary"
+                                className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-primary-500 shadow-md transition-colors"
                             >
                                 Sign Up
                             </Link>
@@ -190,7 +190,7 @@ const Premium = () => {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.2, delay: index * 0.1 }}
-                            className="bg-white dark:bg-neutral-800 p-4 rounded-lg shadow-sm"
+                            className="bg-white dark:bg-neutral-800 p-4 rounded-lg shadow-sm border border-[var(--color-primary)]/20"
                         >
                             <div className="flex items-center gap-2 mb-2">
                                 <span className="text-xl">{benefit.icon}</span>
@@ -201,7 +201,7 @@ const Premium = () => {
                             <p className="text-neutral-600 dark:text-neutral-400 text-sm">
                                 {benefit.desc}
                             </p>
-                            <FaCheckCircle className="text-primary mt-2" />
+                            <FaCheckCircle className="text-[var(--color-primary)] mt-2" />
                         </motion.div>
                     ))}
                 </div>
@@ -211,12 +211,12 @@ const Premium = () => {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="bg-primary p-6 rounded-lg text-center"
+                        className="bg-[var(--color-primary)] p-6 rounded-lg text-center"
                     >
-                        <h2 className="text-xl font-semibold text-white dark:text-neutral-100 mb-2">
+                        <h2 className="text-xl font-semibold text-white mb-2">
                             Ready to Go Premium?
                         </h2>
-                        <p className="text-primary/90 dark:text-primary/70 mb-4">
+                        <p className="text-white/90 mb-4">
                             Join thousands of students unlocking their potential
                             for just ₹9/month.
                         </p>
@@ -226,7 +226,7 @@ const Premium = () => {
                                 whileTap={{ scale: 0.95 }}
                                 onClick={handleInstamojoPayment}
                                 disabled={loading}
-                                className="bg-white dark:bg-neutral-800 text-primary px-6 py-2 rounded-lg flex items-center mx-auto disabled:opacity-50"
+                                className="bg-white text-[var(--color-primary)] px-6 py-2 rounded-lg flex items-center mx-auto disabled:opacity-50 shadow-md hover:shadow-lg hover:bg-neutral-100 transition-colors"
                             >
                                 {loading ? (
                                     <>
@@ -246,13 +246,13 @@ const Premium = () => {
                             <div className="flex justify-center gap-4">
                                 <Link
                                     to="/login"
-                                    className="px-4 py-2 bg-white dark:bg-neutral-800 text-primary rounded-lg"
+                                    className="px-4 py-2 bg-white text-[var(--color-primary)] rounded-lg shadow-md hover:bg-neutral-100 transition-colors"
                                 >
                                     Log In
                                 </Link>
                                 <Link
                                     to="/signup"
-                                    className="px-4 py-2 bg-primary text-white dark:text-neutral-100 rounded-lg"
+                                    className="px-4 py-2 bg-accent-400 text-white rounded-lg shadow-md hover:bg-accent-500 transition-colors"
                                 >
                                     Sign Up
                                 </Link>

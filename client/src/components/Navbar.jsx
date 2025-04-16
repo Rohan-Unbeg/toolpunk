@@ -29,19 +29,7 @@ const Navbar = () => {
         const nameSource =
             currentUser?.name || currentUser?.email?.split("@")[0] || "U";
         const name = encodeURIComponent(nameSource);
-        const colors = [
-            "F94144",
-            "F3722C",
-            "F8961E",
-            "F9C74F",
-            "90BE6D",
-            "43AA8B",
-            "577590",
-        ];
-        const seed = currentUser?.$id?.substring(0, 8) || "00000000";
-        const colorIndex = parseInt(seed, 16) % colors.length;
-        const color = colors[colorIndex];
-        return `https://ui-avatars.com/api/?name=${name}&background=${color}&color=fff&length=2&size=96`;
+        return `https://ui-avatars.com/api/?name=${name}&background=[var(--color-primary)]&color=fff&length=2&size=96`;
     };
 
     const getAvatar = () => {
@@ -70,9 +58,9 @@ const Navbar = () => {
 
     return (
         <nav
-            className={`fixed w-full z-50 bg-indigo-900 dark:bg-gray-800 text-white dark:text-gray-100 py-3 transition-colors duration-200 ${
+            className={`fixed w-full z-50 bg-[var(--color-primary)] text-white py-3 transition-colors duration-200 ${
                 scrolled
-                    ? "bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 shadow-md"
+                    ? "bg-white dark:bg-neutral-900 text-neutral-800 dark:text-neutral-100 shadow-md"
                     : ""
             }`}
         >
@@ -83,24 +71,18 @@ const Navbar = () => {
                         transition={{ duration: 0.2 }}
                         className={`text-2xl ${
                             scrolled
-                                ? "text-indigo-600 dark:text-indigo-400"
-                                : "text-white dark:text-gray-100"
+                                ? "text-[var(--color-primary)]"
+                                : "text-white"
                         }`}
                     >
                         🧰
                     </motion.span>
                     <span
-                        className="text-lg font-bold"
-                        style={{
-                            backgroundImage: scrolled
-                                ? "linear-gradient(45deg, #4f46e5, #7c3aed)"
-                                : isDarkMode
-                                ? "linear-gradient(45deg, #818cf8, #c4b5fd)"
-                                : "linear-gradient(45deg, #e0e7ff, #a5b4fc)",
-                            WebkitBackgroundClip: "text",
-                            backgroundClip: "text",
-                            color: "transparent",
-                        }}
+                        className={`text-lg font-bold ${
+                            scrolled
+                                ? "text-[var(--color-primary)] dark:text-neutral-100"
+                                : "text-white"
+                        }`}
                     >
                         Toolpunk
                     </span>
@@ -124,7 +106,7 @@ const Navbar = () => {
                         Premium
                     </NavLink>
                     {isLoading ? (
-                        <div className="w-20 h-6 bg-gray-200 rounded-full"></div>
+                        <div className="w-20 h-6 bg-neutral-200 rounded-full"></div>
                     ) : user ? (
                         <div className="flex items-center gap-3">
                             <Link to="/profile">{getAvatar()}</Link>
@@ -132,10 +114,10 @@ const Navbar = () => {
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={logout}
-                                className={`text-sm px-3 py-1 rounded-full transition-colors duration-200 ${
+                                className={`text-sm px-3 py-1 rounded-full shadow-md transition-colors duration-200 ${
                                     scrolled
-                                        ? "bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-400"
-                                        : "bg-red-600/20 dark:bg-red-900/50 text-red-100 dark:text-red-400"
+                                        ? "text-[var(--color-primary)] bg-[var(--color-primary)]/10 hover:bg-[var(--color-primary)]/20 dark:text-neutral-300 dark:bg-neutral-700/20 dark:hover:bg-neutral-700/30"
+                                        : "text-white bg-white/20 hover:bg-white/30 dark:text-neutral-100 dark:bg-neutral-700/20 dark:hover:bg-neutral-700/30"
                                 }`}
                             >
                                 Logout
@@ -158,7 +140,11 @@ const Navbar = () => {
                                         !isActive("/signup"))
                                 }
                                 scrolled={scrolled}
-                                className="bg-blue-500 text-white"
+                                className={`${
+                                    scrolled
+                                        ? "bg-accent-400 text-neutral-900 hover:bg-accent-500 dark:bg-accent-500 dark:text-white dark:hover:bg-accent-600"
+                                        : "bg-accent-400 text-white hover:bg-accent-500 dark:bg-accent-400 dark:text-white dark:hover:bg-accent-500"
+                                } shadow-md`}
                             >
                                 Sign Up
                             </NavLink>
@@ -166,12 +152,12 @@ const Navbar = () => {
                     )}
                     <button
                         onClick={toggleDarkMode}
-                        className="p-1 rounded-full bg-gray-200 dark:bg-gray-600"
+                        className="p-1 rounded-full bg-neutral-200 dark:bg-neutral-600 shadow-md"
                     >
                         {isDarkMode ? (
-                            <FaSun className="text-yellow-400" />
+                            <FaSun className="text-accent-400" />
                         ) : (
-                            <FaMoon className="text-gray-600" />
+                            <FaMoon className="text-neutral-600" />
                         )}
                     </button>
                 </div>
@@ -188,12 +174,20 @@ const Navbar = () => {
                                     y: mobileMenuOpen ? 8 : 0,
                                 }}
                                 transition={{ duration: 0.2 }}
-                                className={`h-0.5 w-full ${scrolled ? "bg-gray-800 dark:bg-gray-300" : "bg-white dark:bg-gray-300"} origin-center`}
+                                className={`h-0.5 w-full ${
+                                    scrolled
+                                        ? "bg-neutral-800 dark:bg-neutral-300"
+                                        : "bg-white"
+                                } origin-center`}
                             ></motion.span>
                             <motion.span
                                 animate={{ opacity: mobileMenuOpen ? 0 : 1 }}
                                 transition={{ duration: 0.2 }}
-                                className={`h-0.5 w-full ${scrolled ? "bg-gray-800 dark:bg-gray-300" : "bg-white dark:bg-gray-300"}`}
+                                className={`h-0.5 w-full ${
+                                    scrolled
+                                        ? "bg-neutral-800 dark:bg-neutral-300"
+                                        : "bg-white"
+                                }`}
                             ></motion.span>
                             <motion.span
                                 animate={{
@@ -201,7 +195,11 @@ const Navbar = () => {
                                     y: mobileMenuOpen ? -8 : 0,
                                 }}
                                 transition={{ duration: 0.2 }}
-                                className={`h-0.5 w-full ${scrolled ? "bg-gray-800 dark:bg-gray-300" : "bg-white dark:bg-gray-300"} origin-center`}
+                                className={`h-0.5 w-full ${
+                                    scrolled
+                                        ? "bg-neutral-800 dark:bg-neutral-300"
+                                        : "bg-white"
+                                } origin-center`}
                             ></motion.span>
                         </div>
                     </button>
@@ -209,7 +207,7 @@ const Navbar = () => {
             </div>
 
             <div
-                className={`md:hidden bg-indigo-900 dark:bg-gray-800 text-white dark:text-gray-100 overflow-hidden transition-all duration-200 ${
+                className={`md:hidden bg-[var(--color-primary)] text-white overflow-hidden transition-all duration-200 ${
                     mobileMenuOpen ? "max-h-screen py-8" : "max-h-0 py-0"
                 }`}
             >
@@ -238,15 +236,17 @@ const Navbar = () => {
                         </div>
                     </MobileNavLink>
                     {user ? (
-                        <>
-                            <motion.button
-                                whileTap={{ scale: 0.95 }}
-                                onClick={logout}
-                                className="w-full py-3 bg-red-600/20 dark:bg-red-900/50 text-red-100 dark:text-red-400 rounded-lg text-center text-base mt-4"
-                            >
-                                Logout
-                            </motion.button>
-                        </>
+                        <motion.button
+                            whileTap={{ scale: 0.95 }}
+                            onClick={logout}
+                            className={`w-full py-3 rounded-lg text-center text-base mt-4 shadow-md transition-colors duration-200 ${
+                                scrolled
+                                    ? "text-neutral-800 bg-neutral-200/20 hover:bg-neutral-200/30 dark:text-neutral-100 dark:bg-neutral-700/20 dark:hover:bg-neutral-700/30"
+                                    : "text-neutral-800 bg-neutral-200/20 hover:bg-neutral-200/30 dark:text-neutral-100 dark:bg-neutral-700/20 dark:hover:bg-neutral-700/30"
+                            }`}
+                        >
+                            Logout
+                        </motion.button>
                     ) : (
                         <>
                             <MobileNavLink
@@ -259,7 +259,11 @@ const Navbar = () => {
                             </MobileNavLink>
                             <Link
                                 to="/signup"
-                                className="block py-3 px-4 bg-blue-500 text-white rounded-lg text-center text-base mt-2"
+                                className={`block py-3 px-4 rounded-lg text-center text-base mt-2 shadow-md transition-colors duration-200 ${
+                                    scrolled
+                                        ? "bg-accent-400 text-neutral-900 hover:bg-accent-500 dark:bg-accent-500 dark:text-white dark:hover:bg-accent-600"
+                                        : "bg-accent-400 text-white hover:bg-accent-500 dark:bg-accent-400 dark:text-white dark:hover:bg-accent-500"
+                                }`}
                             >
                                 Sign Up
                             </Link>
@@ -267,15 +271,16 @@ const Navbar = () => {
                     )}
                     <button
                         onClick={toggleDarkMode}
-                        className="block py-3 px-3 rounded-lg text-base text-center bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-100"
+                        className="block py-3 px-3 rounded-lg text-base text-center bg-neutral-200 dark:bg-neutral-600 text-neutral-800 dark:text-neutral-100 shadow-md"
                     >
                         {isDarkMode ? (
                             <span className="flex items-center justify-center gap-2">
-                                <FaSun className="text-yellow-400" /> Light Mode
+                                <FaSun className="text-accent-400" /> Light Mode
                             </span>
                         ) : (
                             <span className="flex items-center justify-center gap-2">
-                                <FaMoon className="text-gray-600" /> Dark Mode
+                                <FaMoon className="text-neutral-600" /> Dark
+                                Mode
                             </span>
                         )}
                     </button>
@@ -288,14 +293,14 @@ const Navbar = () => {
 const NavLink = ({ children, to, active, scrolled, className = "" }) => (
     <Link
         to={to}
-        className={`px-3 py-1 text-sm rounded-lg flex items-center transition-colors duration-200 ${
+        className={`px-3 py-1 text-sm rounded-lg flex items-center shadow-md transition-colors duration-200 ${
             active
                 ? scrolled
-                    ? "text-indigo-800 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/50"
-                    : "text-white dark:text-gray-100 bg-white/20 dark:bg-indigo-900/50"
+                    ? "text-[var(--color-primary)] bg-[var(--color-primary)]/10"
+                    : "text-white bg-white/20"
                 : scrolled
-                ? "text-gray-800 dark:text-gray-300 hover:bg-indigo-100/50 dark:hover:bg-indigo-900/50"
-                : "text-white dark:text-gray-300 hover:bg-white/10 dark:hover:bg-indigo-900/50"
+                ? "text-neutral-800 dark:text-neutral-300 hover:bg-[var(--color-primary)]/10"
+                : "text-white hover:bg-white/10"
         } ${className}`}
     >
         {children}
@@ -305,10 +310,8 @@ const NavLink = ({ children, to, active, scrolled, className = "" }) => (
 const MobileNavLink = ({ children, to, active }) => (
     <Link
         to={to}
-        className={`block py-2 px-3 rounded-lg text-base transition-colors duration-200 text-center ${
-            active
-                ? "bg-white/20 dark:bg-indigo-900/50 text-white dark:text-gray-100"
-                : "text-blue-100 dark:text-gray-300 hover:bg-white/10 dark:hover:bg-indigo-900/50"
+        className={`block py-2 px-3 rounded-lg text-base transition-colors duration-200 text-center shadow-md ${
+            active ? "bg-white/20 text-white" : "text-white hover:bg-white/10"
         }`}
     >
         {children}

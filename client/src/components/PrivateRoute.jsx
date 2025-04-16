@@ -16,10 +16,10 @@ const PrivateRoute = ({ children }) => {
 
   if (isLoading && showSpinner) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-neutral-50 dark:bg-neutral-900">
         <div className="text-center">
-          <FaSpinner className="animate-spin text-indigo-600 text-4xl mx-auto mb-3" />
-          <p className="text-gray-600">Checking authentication...</p>
+          <FaSpinner className="animate-spin text-[var(--color-primary)] text-4xl mx-auto mb-3" />
+          <p className="text-neutral-600 dark:text-neutral-400">Checking authentication...</p>
         </div>
       </div>
     );

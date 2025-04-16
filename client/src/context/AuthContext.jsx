@@ -95,8 +95,8 @@ export const AuthProvider = ({ children }) => {
       }}
     >
       {isLoading ? (
-        <div className="min-h-screen flex items-center justify-center">
-          <FaSpinner className="animate-spin text-indigo-600 text-4xl" />
+        <div className="min-h-screen flex items-center justify-center bg-neutral-50 dark:bg-neutral-900">
+          <FaSpinner className="animate-spin text-[var(--color-primary)] text-4xl" />
         </div>
       ) : (
         children

@@ -23,6 +23,8 @@ import CheckEmail from "./pages/CheckEmail";
 import Profile from "./pages/Profile";
 import GoogleCallback from "./pages/GoogleCallback";
 import { ThemeProvider } from "./context/ThemeContext";
+import "./index.css";
+
 
 function App() {
     return (

@@ -110,7 +110,7 @@ const Profile = () => {
                 user.prefs?.picture ||
                 `https://ui-avatars.com/api/?name=${encodeURIComponent(
                     user.name || "U"
-                )}&background=4F46E5&color=fff`
+                )}&background=[var(--color-primary)]&color=fff`
             }
             alt="Profile"
             className="h-20 w-20 rounded-full object-cover border-2 border-white dark:border-neutral-800 shadow"
@@ -120,7 +120,7 @@ const Profile = () => {
     if (isLoading || !user) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-neutral-50 dark:bg-neutral-900">
-                <div className="h-8 w-8 border-4 border-indigo-500 dark:border-indigo-400 border-t-transparent rounded-full animate-spin" />
+                <div className="h-8 w-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
@@ -132,27 +132,27 @@ const Profile = () => {
         .slice(0, 5);
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-16 pb-8 px-4 transition-colors duration-200">
+        <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 pt-16 pb-8 px-4 transition-colors duration-200">
             <div className="max-w-4xl mx-auto space-y-4">
                 <div className="flex justify-between items-center">
                     <Link
                         to="/"
-                        className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 flex items-center gap-1 text-sm"
+                        className="text-[var(--color-primary)] hover:text-primary-500 flex items-center gap-1 text-sm"
                     >
                         <FaArrowLeft /> Back
                     </Link>
                     {!isEditMode && (
                         <button
                             onClick={() => setIsEditMode(true)}
-                            className="bg-indigo-600 dark:bg-indigo-500 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 flex items-center gap-1 text-sm"
+                            className="bg-[var(--color-primary)] text-white px-3 py-1.5 rounded-lg hover:bg-primary-500 flex items-center gap-1 text-sm shadow-md transition-colors"
                         >
                             <FaEdit /> Edit
                         </button>
                     )}
                 </div>
 
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
-                    <div className="h-24 bg-gradient-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700" />
+                <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm overflow-hidden">
+                    <div className="h-24 bg-gradient-to-r from-[var(--color-primary)] to-accent-400" />
                     <div className="p-4 relative">
                         <div className="absolute top-0 left-4 -translate-y-1/2">
                             {getAvatar()}
@@ -160,21 +160,21 @@ const Profile = () => {
                         <div className="mt-10 sm:ml-28">
                             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end">
                                 <div>
-                                    <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+                                    <h1 className="text-xl font-semibold text-neutral-800 dark:text-neutral-100 flex items-center gap-2">
                                         {user.name}
                                         {isPremium && (
-                                            <span className="bg-yellow-100 dark:bg-yellow-200 text-yellow-800 dark:text-yellow-900 text-xs px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                                            <span className="bg-accent-100 dark:bg-accent-200 text-accent-800 dark:text-accent-900 text-xs px-2 py-0.5 rounded-full inline-flex items-center gap-1">
                                                 <RiVipCrownFill /> Premium
                                             </span>
                                         )}
                                     </h1>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                                    <p className="text-sm text-neutral-600 dark:text-neutral-400">
                                         {user.email}
                                     </p>
-                                    <p className="text-sm text-gray-500 dark:text-gray-500">
+                                    <p className="text-sm text-neutral-500 dark:text-neutral-500">
                                         {user.prefs?.bio || "No bio yet"}
                                     </p>
-                                    <p className="text-xs text-gray-400 dark:text-gray-600 mt-1">
+                                    <p className="text-xs text-neutral-400 dark:text-neutral-600 mt-1">
                                         Joined{" "}
                                         {new Date(
                                             user.$createdAt
@@ -184,7 +184,7 @@ const Profile = () => {
                                 {!isEditMode && (
                                     <Link
                                         to="/projectgenerator"
-                                        className="mt-2 sm:mt-0 bg-indigo-600 dark:bg-indigo-500 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 text-sm"
+                                        className="mt-2 sm:mt-0 bg-[var(--color-primary)] text-white px-3 py-1.5 rounded-lg hover:bg-primary-500 text-sm shadow-md transition-colors"
                                     >
                                         New Idea
                                     </Link>
@@ -195,13 +195,13 @@ const Profile = () => {
                 </div>
 
                 {isEditMode && (
-                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
+                    <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-4 border border-[var(--color-primary)]/20">
                         <form
                             onSubmit={handleUpdateProfile}
                             className="space-y-3"
                         >
                             <div>
-                                <label className="block text-sm text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm text-neutral-700 dark:text-neutral-300">
                                     Name
                                 </label>
                                 <input
@@ -210,29 +210,29 @@ const Profile = () => {
                                     onChange={(e) =>
                                         setTempName(e.target.value)
                                     }
-                                    className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                    className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] dark:bg-neutral-700 dark:border-neutral-600 dark:text-white"
                                     required
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm text-neutral-700 dark:text-neutral-300">
                                     Bio
                                 </label>
                                 <textarea
                                     value={tempBio}
                                     onChange={(e) => setTempBio(e.target.value)}
-                                    className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                    className="w-full border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] dark:bg-neutral-700 dark:border-neutral-600 dark:text-white"
                                     rows="3"
                                     maxLength="160"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm text-gray-700 dark:text-gray-300">
+                                <label className="block text-sm text-neutral-700 dark:text-neutral-300">
                                     Profile Picture
                                 </label>
                                 <div className="flex items-center gap-2">
                                     {getAvatar()}
-                                    <label className="bg-indigo-600 dark:bg-indigo-500 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 text-sm cursor-pointer">
+                                    <label className="bg-[var(--color-primary)] text-white px-3 py-1.5 rounded-lg hover:bg-primary-500 text-sm cursor-pointer shadow-md transition-colors">
                                         {selectedFile ? "Change" : "Upload"}
                                         <input
                                             type="file"
@@ -248,7 +248,7 @@ const Profile = () => {
                                                 setSelectedFile(null);
                                                 setPreviewUrl(null);
                                             }}
-                                            className="text-sm text-red-600 dark:text-red-400 hover:underline"
+                                            className="text-sm text-error-600 dark:text-error-400 hover:underline"
                                         >
                                             Remove
                                         </button>
@@ -259,14 +259,14 @@ const Profile = () => {
                                 <button
                                     type="button"
                                     onClick={() => setIsEditMode(false)}
-                                    className="px-3 py-1.5 border rounded-lg text-gray-700 dark:text-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-sm"
+                                    className="px-3 py-1.5 border rounded-lg text-neutral-700 dark:text-neutral-300 dark:border-neutral-600 hover:bg-neutral-100 dark:hover:bg-neutral-700 text-sm"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={isUploading}
-                                    className={`px-3 py-1.5 bg-indigo-600 dark:bg-indigo-500 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 text-sm ${
+                                    className={`px-3 py-1.5 bg-[var(--color-primary)] text-white rounded-lg hover:bg-primary-500 text-sm shadow-md transition-colors ${
                                         isUploading
                                             ? "opacity-50 cursor-not-allowed"
                                             : ""
@@ -280,73 +280,73 @@ const Profile = () => {
                 )}
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div className="bg-white dark:bg-gray-800 rounded-lg p-3 shadow-sm text-center">
-                        <FaLightbulb className="text-indigo-500 dark:text-indigo-400 text-lg mx-auto mb-1" />
-                        <p className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                    <div className="bg-white dark:bg-neutral-800 rounded-lg p-3 shadow-sm text-center">
+                        <FaLightbulb className="text-[var(--color-primary)] text-lg mx-auto mb-1" />
+                        <p className="text-lg font-semibold text-neutral-800 dark:text-neutral-100">
                             {ideas.length}
                         </p>
-                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                        <p className="text-xs text-neutral-600 dark:text-neutral-400">
                             Ideas
                         </p>
                     </div>
-                    <div className="bg-white dark:bg-gray-800 rounded-lg p-3 shadow-sm text-center">
-                        <FaHeart className="text-purple-500 dark:text-purple-400 text-lg mx-auto mb-1" />
-                        <p className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                    <div className="bg-white dark:bg-neutral-800 rounded-lg p-3 shadow-sm text-center">
+                        <FaHeart className="text-accent-400 text-lg mx-auto mb-1" />
+                        <p className="text-lg font-semibold text-neutral-800 dark:text-neutral-100">
                             {favoriteIdeas.length}
                         </p>
-                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                        <p className="text-xs text-neutral-600 dark:text-neutral-400">
                             Favorites
                         </p>
                     </div>
-                    <div className="bg-white dark:bg-gray-800 rounded-lg p-3 shadow-sm text-center">
-                        <FaUser className="text-green-500 dark:text-green-400 text-lg mx-auto mb-1" />
-                        <p className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                    <div className="bg-white dark:bg-neutral-800 rounded-lg p-3 shadow-sm text-center">
+                        <FaUser className="text-success-500 text-lg mx-auto mb-1" />
+                        <p className="text-lg font-semibold text-neutral-800 dark:text-neutral-100">
                             {isPremium ? "∞" : "3/day"}
                         </p>
-                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                        <p className="text-xs text-neutral-600 dark:text-neutral-400">
                             Limit
                         </p>
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4">
-                    <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-3">
+                <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm p-4 border border-[var(--color-primary)]/20">
+                    <h2 className="text-lg font-semibold text-neutral-800 dark:text-neutral-100 mb-3">
                         Your Tools
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <Link
                             to="/projectgenerator"
-                            className="bg-indigo-50 dark:bg-indigo-900/50 hover:bg-indigo-100 dark:hover:bg-indigo-900 p-3 rounded-lg flex flex-col gap-1"
+                            className="bg-[var(--color-primary)]/10 hover:bg-[var(--color-primary)]/20 p-3 rounded-lg flex flex-col gap-1"
                         >
-                            <h3 className="font-semibold text-indigo-800 dark:text-indigo-300">
+                            <h3 className="font-semibold text-[var(--color-primary)]">
                                 🎯 Project Idea Generator
                             </h3>
-                            <p className="text-xs text-gray-600 dark:text-gray-400">
+                            <p className="text-xs text-neutral-600 dark:text-neutral-400">
                                 Unique project ideas for your field
                             </p>
                         </Link>
-                        <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg opacity-70">
-                            <h3 className="font-semibold text-gray-800 dark:text-gray-300">
+                        <div className="bg-neutral-100 dark:bg-neutral-700 p-3 rounded-lg opacity-70">
+                            <h3 className="font-semibold text-neutral-800 dark:text-neutral-300">
                                 📄 Project Report Generator
                             </h3>
-                            <p className="text-xs text-gray-600 dark:text-gray-400">
+                            <p className="text-xs text-neutral-600 dark:text-neutral-400">
                                 Coming soon
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm border border-[var(--color-primary)]/20">
                     <Tab.Group>
-                        <Tab.List className="flex border-b dark:border-gray-700">
+                        <Tab.List className="flex border-b dark:border-neutral-700">
                             {["All Ideas", "Favorites", "Recent"].map((tab) => (
                                 <Tab
                                     key={tab}
                                     className={({ selected }) =>
                                         `flex-1 py-2 text-sm font-medium ${
                                             selected
-                                                ? "text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-500 dark:border-indigo-400"
-                                                : "text-gray-500 dark:text-gray-400"
+                                                ? "text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]"
+                                                : "text-neutral-500 dark:text-neutral-400"
                                         }`
                                     }
                                 >
@@ -360,7 +360,7 @@ const Profile = () => {
                                     <Tab.Panel key={idx}>
                                         {list.length === 0 ? (
                                             <div className="text-center py-4">
-                                                <p className="text-gray-500 dark:text-gray-400 text-sm">
+                                                <p className="text-neutral-500 dark:text-neutral-400 text-sm">
                                                     No{" "}
                                                     {idx === 1
                                                         ? "favorites"
@@ -371,7 +371,7 @@ const Profile = () => {
                                                 </p>
                                                 <Link
                                                     to="/projectgenerator"
-                                                    className="mt-2 inline-block bg-indigo-600 dark:bg-indigo-500 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 text-sm"
+                                                    className="mt-2 inline-block bg-[var(--color-primary)] text-white px-3 py-1.5 rounded-lg hover:bg-primary-500 text-sm shadow-md transition-colors"
                                                 >
                                                     Generate Ideas
                                                 </Link>
@@ -381,22 +381,22 @@ const Profile = () => {
                                                 {list.map((idea) => (
                                                     <li
                                                         key={idea.$id}
-                                                        className="p-2 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
+                                                        className="p-2 border border-[var(--color-primary)]/20 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-700"
                                                     >
                                                         <div className="flex justify-between items-center">
                                                             <div>
-                                                                <p className="text-sm text-gray-800 dark:text-gray-100">
+                                                                <p className="text-sm text-neutral-800 dark:text-neutral-100">
                                                                     {
                                                                         idea.ideaText
                                                                     }
                                                                 </p>
                                                                 <div className="flex gap-2 mt-1">
-                                                                    <span className="text-xs bg-indigo-100 dark:bg-indigo-200 text-indigo-800 dark:text-indigo-900 px-2 py-0.5 rounded">
+                                                                    <span className="text-xs bg-[var(--color-primary)]/10 text-[var(--color-primary)] px-2 py-0.5 rounded">
                                                                         {
                                                                             idea.branch
                                                                         }
                                                                     </span>
-                                                                    <span className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 px-2 py-0.5 rounded flex items-center gap-1">
+                                                                    <span className="text-xs bg-neutral-100 dark:bg-neutral-700 text-neutral-800 dark:text-neutral-300 px-2 py-0.5 rounded flex items-center gap-1">
                                                                         <FaCalendarAlt
                                                                             size={
                                                                                 10
@@ -416,10 +416,10 @@ const Profile = () => {
                                                                             !idea.favorite
                                                                         )
                                                                     }
-                                                                    className="text-gray-400 hover:text-red-500 dark:hover:text-red-400"
+                                                                    className="text-neutral-400 hover:text-accent-400 dark:hover:text-accent-400"
                                                                 >
                                                                     {idea.favorite ? (
-                                                                        <FaHeart className="text-red-500 dark:text-red-400" />
+                                                                        <FaHeart className="text-accent-400" />
                                                                     ) : (
                                                                         <FaRegHeart />
                                                                     )}
@@ -453,7 +453,7 @@ const Profile = () => {
                                                                                     )
                                                                             )
                                                                     }
-                                                                    className="text-gray-400 hover:text-red-500 dark:hover:text-red-400"
+                                                                    className="text-neutral-400 hover:text-error-600 dark:hover:text-error-400"
                                                                 >
                                                                     <FaTrash />
                                                                 </button>
@@ -471,7 +471,7 @@ const Profile = () => {
                 </div>
 
                 {!isPremium && (
-                    <div className="bg-yellow-50 dark:bg-yellow-200 rounded-lg p-3 text-center text-sm text-yellow-800 dark:text-yellow-900">
+                    <div className="bg-accent-100 dark:bg-accent-200 rounded-lg p-3 text-center text-sm text-accent-800 dark:text-accent-900">
                         Free plan — Upgrade to Premium for unlimited ideas! 💎
                     </div>
                 )}

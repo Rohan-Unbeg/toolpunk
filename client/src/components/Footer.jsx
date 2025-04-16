@@ -1,28 +1,27 @@
-// /client/src/components/Footer.jsx
 import React from "react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
     return (
-        <footer className="bg-indigo-900 dark:bg-gray-800 text-white dark:text-gray-100 py-8 border-t border-blue-300 dark:border-blue-500">
+        <footer className="bg-[var(--color-primary)] text-white py-8 border-t border-[var(--color-primary)]/20">
             <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                     <h3 className="text-xl font-bold mb-2 tracking-tight">
                         🧰 Toolpunk
                     </h3>
-                    <p className="text-sm text-gray-300 dark:text-gray-400">
+                    <p className="text-sm text-neutral-200 dark:text-neutral-300">
                         Smart tools for students and solopreneurs. Powered by
                         AI, built with love.
                     </p>
                 </div>
 
                 <div>
-                    <h4 className="font-semibold mb-2">Legal</h4>
-                    <ul className="space-y-1 text-sm text-gray-300 dark:text-gray-400">
+                    <h4 className="font-semibold mb-2 text-accent-400">Legal</h4>
+                    <ul className="space-y-1 text-sm text-neutral-200 dark:text-neutral-300">
                         <li>
                             <Link
                                 to="/terms"
-                                className="hover:text-gray-100 dark:hover:text-gray-200"
+                                className="hover:text-accent-400"
                             >
                                 Terms & Conditions
                             </Link>
@@ -30,7 +29,7 @@ const Footer = () => {
                         <li>
                             <Link
                                 to="/privacy"
-                                className="hover:text-gray-100 dark:hover:text-gray-200"
+                                className="hover:text-accent-400"
                             >
                                 Privacy Policy
                             </Link>
@@ -38,7 +37,7 @@ const Footer = () => {
                         <li>
                             <Link
                                 to="/refunds"
-                                className="hover:text-gray-100 dark:hover:text-gray-200"
+                                className="hover:text-accent-400"
                             >
                                 Refund Policy
                             </Link>
@@ -46,7 +45,7 @@ const Footer = () => {
                         <li>
                             <Link
                                 to="/shipping"
-                                className="hover:text-gray-100 dark:hover:text-gray-200"
+                                className="hover:text-accent-400"
                             >
                                 Shipping Policy
                             </Link>
@@ -55,12 +54,12 @@ const Footer = () => {
                 </div>
 
                 <div>
-                    <h4 className="font-semibold mb-2">More</h4>
-                    <ul className="space-y-1 text-sm text-gray-300 dark:text-gray-400">
+                    <h4 className="font-semibold mb-2 text-accent-400">More</h4>
+                    <ul className="space-y-1 text-sm text-neutral-200 dark:text-neutral-300">
                         <li>
                             <Link
                                 to="/projectgenerator"
-                                className="hover:text-gray-100 dark:hover:text-gray-200"
+                                className="hover:text-accent-400"
                             >
                                 Project Generator
                             </Link>
@@ -68,7 +67,7 @@ const Footer = () => {
                         <li>
                             <Link
                                 to="/premium"
-                                className="hover:text-gray-100 dark:hover:text-gray-200"
+                                className="hover:text-accent-400"
                             >
                                 Go Premium
                             </Link>
@@ -76,7 +75,7 @@ const Footer = () => {
                         <li>
                             <Link
                                 to="/contact"
-                                className="hover:text-gray-100 dark:hover:text-gray-200"
+                                className="hover:text-accent-400"
                             >
                                 Contact
                             </Link>
@@ -84,7 +83,7 @@ const Footer = () => {
                         <li>
                             <a
                                 href="mailto:rohanunbeg0918@gmail.com"
-                                className="hover:text-gray-100 dark:hover:text-gray-200"
+                                className="hover:text-accent-400"
                             >
                                 Contact Support
                             </a>
@@ -93,7 +92,7 @@ const Footer = () => {
                 </div>
             </div>
 
-            <div className="mt-8 text-center text-xs text-gray-400 dark:text-gray-500">
+            <div className="mt-8 text-center text-xs text-neutral-200 dark:text-neutral-400">
                 © {new Date().getFullYear()} Toolpunk — Built in 🇮🇳 with 💻 + ☕
             </div>
         </footer>
