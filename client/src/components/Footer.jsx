@@ -16,12 +16,12 @@ const Footer = () => {
                 </div>
 
                 <div>
-                    <h4 className="font-semibold mb-2 text-accent-400">Legal</h4>
+                    <h4 className="font-semibold mb-2 text-[var(--accent-600)]">Legal</h4>
                     <ul className="space-y-1 text-sm text-neutral-200 dark:text-neutral-300">
                         <li>
                             <Link
                                 to="/terms"
-                                className="hover:text-accent-400"
+                                className="hover:text-[var(--accent-600)]"
                             >
                                 Terms & Conditions
                             </Link>
@@ -29,7 +29,7 @@ const Footer = () => {
                         <li>
                             <Link
                                 to="/privacy"
-                                className="hover:text-accent-400"
+                                className="hover:text-[var(--accent-600)]"
                             >
                                 Privacy Policy
                             </Link>
@@ -37,7 +37,7 @@ const Footer = () => {
                         <li>
                             <Link
                                 to="/refunds"
-                                className="hover:text-accent-400"
+                                className="hover:text-[var(--accent-600)]"
                             >
                                 Refund Policy
                             </Link>
@@ -45,7 +45,7 @@ const Footer = () => {
                         <li>
                             <Link
                                 to="/shipping"
-                                className="hover:text-accent-400"
+                                className="hover:text-[var(--accent-600)]"
                             >
                                 Shipping Policy
                             </Link>
@@ -54,12 +54,12 @@ const Footer = () => {
                 </div>
 
                 <div>
-                    <h4 className="font-semibold mb-2 text-accent-400">More</h4>
+                    <h4 className="font-semibold mb-2 text-[var(--accent-600)]">More</h4>
                     <ul className="space-y-1 text-sm text-neutral-200 dark:text-neutral-300">
                         <li>
                             <Link
                                 to="/projectgenerator"
-                                className="hover:text-accent-400"
+                                className="hover:text-[var(--accent-600)]"
                             >
                                 Project Generator
                             </Link>
@@ -67,7 +67,7 @@ const Footer = () => {
                         <li>
                             <Link
                                 to="/premium"
-                                className="hover:text-accent-400"
+                                className="hover:text-[var(--accent-600)]"
                             >
                                 Go Premium
                             </Link>
@@ -75,7 +75,7 @@ const Footer = () => {
                         <li>
                             <Link
                                 to="/contact"
-                                className="hover:text-accent-400"
+                                className="hover:text-[var(--accent-600)]"
                             >
                                 Contact
                             </Link>
@@ -83,7 +83,7 @@ const Footer = () => {
                         <li>
                             <a
                                 href="mailto:rohanunbeg0918@gmail.com"
-                                className="hover:text-accent-400"
+                                className="hover:text-[var(--accent-600)]"
                             >
                                 Contact Support
                             </a>
@@ -92,7 +92,7 @@ const Footer = () => {
                 </div>
             </div>
 
-            <div className="mt-8 text-center text-xs text-neutral-200 dark:text-neutral-400">
+            <div className="mt-8 text-center text-sm text-neutral-200 dark:text-neutral-300">
                 © {new Date().getFullYear()} Toolpunk — Built in 🇮🇳 with 💻 + ☕
             </div>
         </footer>

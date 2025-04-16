@@ -17,6 +17,7 @@ import { Link } from "react-router-dom";
 import { Tab } from "@headlessui/react";
 import appwriteService from "../services/appwrite";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
 
 const Profile = () => {
     const { user, setUser, isLoading } = useContext(AuthContext);
@@ -27,6 +28,8 @@ const Profile = () => {
     const [isEditMode, setIsEditMode] = useState(false);
     const [tempName, setTempName] = useState("");
     const [tempBio, setTempBio] = useState("");
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [ideaToDelete, setIdeaToDelete] = useState(null);
 
     useEffect(() => {
         if (user) {
@@ -103,6 +106,24 @@ const Profile = () => {
         }
     };
 
+    const handleDelete = (ideaId) => {
+        setIdeaToDelete(ideaId);
+        setShowDeleteModal(true);
+    };
+
+    const confirmDelete = async () => {
+        try {
+            await appwriteService.deleteIdea(ideaToDelete);
+            setIdeas(ideas.filter((i) => i.$id !== ideaToDelete));
+            toast.success("Idea deleted");
+        } catch {
+            toast.error("Failed to delete");
+        } finally {
+            setShowDeleteModal(false);
+            setIdeaToDelete(null);
+        }
+    };
+
     const getAvatar = () => (
         <img
             src={
@@ -133,18 +154,55 @@ const Profile = () => {
 
     return (
         <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 pt-16 pb-8 px-4 transition-colors duration-200">
+            {showDeleteModal && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="fixed inset-0 z-50 bg-black/40 dark:bg-black/60 flex items-center justify-center px-4"
+                >
+                    <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-lg p-6 max-w-sm w-full">
+                        <h2 className="text-lg font-semibold text-neutral-800 dark:text-neutral-100 mb-2">
+                            Delete this idea?
+                        </h2>
+                        <p className="text-neutral-600 dark:text-neutral-400 text-sm mb-6">
+                            This action cannot be undone.
+                        </p>
+                        <div className="flex justify-end gap-3">
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={() => setShowDeleteModal(false)}
+                                className="px-4 py-2 text-neutral-600 dark:text-neutral-300 rounded-lg border border-neutral-300 dark:border-neutral-600"
+                            >
+                                Cancel
+                            </motion.button>
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={confirmDelete}
+                                className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--accent-600)] transition-colors"
+                            >
+                                Delete
+                            </motion.button>
+                        </div>
+                    </div>
+                </motion.div>
+            )}
+
             <div className="max-w-4xl mx-auto space-y-4">
                 <div className="flex justify-between items-center">
                     <Link
                         to="/"
-                        className="text-[var(--color-primary)] hover:text-primary-500 flex items-center gap-1 text-sm"
+                        className="text-[var(--color-primary)] hover:text-[var(--accent-600)] flex items-center gap-1 text-sm"
                     >
                         <FaArrowLeft /> Back
                     </Link>
                     {!isEditMode && (
                         <button
                             onClick={() => setIsEditMode(true)}
-                            className="bg-[var(--color-primary)] text-white px-3 py-1.5 rounded-lg hover:bg-primary-500 flex items-center gap-1 text-sm shadow-md transition-colors"
+                            className="bg-[var(--color-primary)] text-white px-3 py-1.5 rounded-lg hover:bg-[var(--accent-600)] flex items-center gap-1 text-sm shadow-md transition-colors"
                         >
                             <FaEdit /> Edit
                         </button>
@@ -152,7 +210,7 @@ const Profile = () => {
                 </div>
 
                 <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-sm overflow-hidden">
-                    <div className="h-24 bg-gradient-to-r from-[var(--color-primary)] to-accent-400" />
+                    <div className="h-24 bg-gradient-to-r from-[var(--color-primary)] to-[var(--accent-500)]" />
                     <div className="p-4 relative">
                         <div className="absolute top-0 left-4 -translate-y-1/2">
                             {getAvatar()}
@@ -163,7 +221,7 @@ const Profile = () => {
                                     <h1 className="text-xl font-semibold text-neutral-800 dark:text-neutral-100 flex items-center gap-2">
                                         {user.name}
                                         {isPremium && (
-                                            <span className="bg-accent-100 dark:bg-accent-200 text-accent-800 dark:text-accent-900 text-xs px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                                            <span className="bg-[var(--accent-500)]/10 text-[var(--accent-500)] text-xs px-2 py-0.5 rounded-full inline-flex items-center gap-1">
                                                 <RiVipCrownFill /> Premium
                                             </span>
                                         )}
@@ -184,7 +242,7 @@ const Profile = () => {
                                 {!isEditMode && (
                                     <Link
                                         to="/projectgenerator"
-                                        className="mt-2 sm:mt-0 bg-[var(--color-primary)] text-white px-3 py-1.5 rounded-lg hover:bg-primary-500 text-sm shadow-md transition-colors"
+                                        className="mt-2 sm:mt-0 bg-[var(--color-primary)] text-white px-3 py-1.5 rounded-lg hover:bg-[var(--accent-600)] text-sm shadow-md transition-colors"
                                     >
                                         New Idea
                                     </Link>
@@ -232,7 +290,7 @@ const Profile = () => {
                                 </label>
                                 <div className="flex items-center gap-2">
                                     {getAvatar()}
-                                    <label className="bg-[var(--color-primary)] text-white px-3 py-1.5 rounded-lg hover:bg-primary-500 text-sm cursor-pointer shadow-md transition-colors">
+                                    <label className="bg-[var(--color-primary)] text-white px-3 py-1.5 rounded-lg hover:bg-[var(--accent-600)] text-sm cursor-pointer shadow-md transition-colors">
                                         {selectedFile ? "Change" : "Upload"}
                                         <input
                                             type="file"
@@ -248,7 +306,7 @@ const Profile = () => {
                                                 setSelectedFile(null);
                                                 setPreviewUrl(null);
                                             }}
-                                            className="text-sm text-error-600 dark:text-error-400 hover:underline"
+                                            className="text-sm text-[var(--color-error)] hover:text-[var(--color-error)]/80"
                                         >
                                             Remove
                                         </button>
@@ -266,7 +324,7 @@ const Profile = () => {
                                 <button
                                     type="submit"
                                     disabled={isUploading}
-                                    className={`px-3 py-1.5 bg-[var(--color-primary)] text-white rounded-lg hover:bg-primary-500 text-sm shadow-md transition-colors ${
+                                    className={`px-3 py-1.5 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--accent-600)] text-sm shadow-md transition-colors ${
                                         isUploading
                                             ? "opacity-50 cursor-not-allowed"
                                             : ""
@@ -290,7 +348,7 @@ const Profile = () => {
                         </p>
                     </div>
                     <div className="bg-white dark:bg-neutral-800 rounded-lg p-3 shadow-sm text-center">
-                        <FaHeart className="text-accent-400 text-lg mx-auto mb-1" />
+                        <FaHeart className="text-[var(--color-icon-favorite)] text-lg mx-auto mb-1 icon-favorite" />
                         <p className="text-lg font-semibold text-neutral-800 dark:text-neutral-100">
                             {favoriteIdeas.length}
                         </p>
@@ -299,7 +357,7 @@ const Profile = () => {
                         </p>
                     </div>
                     <div className="bg-white dark:bg-neutral-800 rounded-lg p-3 shadow-sm text-center">
-                        <FaUser className="text-success-500 text-lg mx-auto mb-1" />
+                        <FaUser className="text-[var(--secondary-600)] text-lg mx-auto mb-1" />
                         <p className="text-lg font-semibold text-neutral-800 dark:text-neutral-100">
                             {isPremium ? "∞" : "3/day"}
                         </p>
@@ -371,7 +429,7 @@ const Profile = () => {
                                                 </p>
                                                 <Link
                                                     to="/projectgenerator"
-                                                    className="mt-2 inline-block bg-[var(--color-primary)] text-white px-3 py-1.5 rounded-lg hover:bg-primary-500 text-sm shadow-md transition-colors"
+                                                    className="mt-2 inline-block bg-[var(--color-primary)] text-white px-3 py-1.5 rounded-lg hover:bg-[var(--accent-600)] text-sm shadow-md transition-colors"
                                                 >
                                                     Generate Ideas
                                                 </Link>
@@ -416,46 +474,25 @@ const Profile = () => {
                                                                             !idea.favorite
                                                                         )
                                                                     }
-                                                                    className="text-neutral-400 hover:text-accent-400 dark:hover:text-accent-400"
+                                                                    className={`focus:outline-none icon-favorite ${
+                                                                        idea.favorite
+                                                                            ? "text-[var(--color-icon-favorite)] hover:text-[var(--color-icon-favorite)]/80"
+                                                                            : "text-neutral-400 hover:text-[var(--color-icon-favorite)]"
+                                                                    }`}
                                                                 >
                                                                     {idea.favorite ? (
-                                                                        <FaHeart className="text-accent-400" />
+                                                                        <FaHeart className="icon-favorite" />
                                                                     ) : (
-                                                                        <FaRegHeart />
+                                                                        <FaRegHeart className="icon-favorite" />
                                                                     )}
                                                                 </button>
                                                                 <button
                                                                     onClick={() =>
-                                                                        appwriteService
-                                                                            .deleteIdea(
-                                                                                idea.$id
-                                                                            )
-                                                                            .then(
-                                                                                () => {
-                                                                                    setIdeas(
-                                                                                        ideas.filter(
-                                                                                            (
-                                                                                                i
-                                                                                            ) =>
-                                                                                                i.$id !==
-                                                                                                idea.$id
-                                                                                        )
-                                                                                    );
-                                                                                    toast.success(
-                                                                                        "Idea deleted"
-                                                                                    );
-                                                                                }
-                                                                            )
-                                                                            .catch(
-                                                                                () =>
-                                                                                    toast.error(
-                                                                                        "Failed to delete"
-                                                                                    )
-                                                                            )
+                                                                        handleDelete(idea.$id)
                                                                     }
-                                                                    className="text-neutral-400 hover:text-error-600 dark:hover:text-error-400"
+                                                                    className="text-neutral-400 hover:text-[var(--color-icon-trash)] focus:outline-none icon-trash"
                                                                 >
-                                                                    <FaTrash />
+                                                                    <FaTrash className="icon-trash" />
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -471,7 +508,7 @@ const Profile = () => {
                 </div>
 
                 {!isPremium && (
-                    <div className="bg-accent-100 dark:bg-accent-200 rounded-lg p-3 text-center text-sm text-accent-800 dark:text-accent-900">
+                    <div className="bg-[var(--accent-500)]/10 rounded-lg p-3 text-center text-sm text-[var(--accent-500)]">
                         Free plan — Upgrade to Premium for unlimited ideas! 💎
                     </div>
                 )}
